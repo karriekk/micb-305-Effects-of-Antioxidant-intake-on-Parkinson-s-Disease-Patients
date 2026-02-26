@@ -9,7 +9,7 @@
     - Split work (coding aim 1/2/3 + literature search + writing) so that each person can start working on different parts of the proposal
     - Compile and organize all the relevant information, research papers, and analyses we have right now
 
-### Questions
+## Questions
 - What are some feedback for group assignment 2?
 - For the proposal, double check if the hypothesis and research question is well rounded
 - In terms of categorizing dietary antioxidant intakes into high and low groups, we used slightly different methods (some used 2/3 * RDA as the threshold, while others used the mean value as the cutoff). We were wondering which method would be more appropriate, and whether it is necessary to standardize the categorization approach across analyses. 

@@ -10,3 +10,25 @@
 
 
 ## Proposal feedback:
+
+
+
+
+
+meeting notes - Coe 
+Get R scripts into GitHub 
+
+No significant difference in alpha diversity, for beta diversity, the low and high group p-value is not less than 0.05, no overall diversity differences. 
+
+Aim and analysis are a little different 
+The random forest model doesn’t predict which type is associated more strongly
+
+Overall model 
+Intake → microbiome (A1,A2,A3)
+Metabolism → cognitive outcomes (A3,A4)
+
+Aim 4 
+h/l indication species and what associated functions  in a pathway 
+Correlate with MoCA using linear regression or spearman 
+ Best r^2 value 
+Find out what pathways are associated with antioxidant processing using the literature 

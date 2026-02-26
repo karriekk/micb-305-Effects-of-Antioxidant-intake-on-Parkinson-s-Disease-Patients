@@ -4,7 +4,7 @@
 - Assignment 6 functional analysis on each dietary antioxidant
 
 ## Proposal preparation
-### Current step
+### Current plan
 - Get started on writing the proposal draft
     - Split work (coding aim 1/2/3 + literature search + writing) so that each person can start working on different parts of the proposal
     - Compile and organize all the relevant information, research papers, and analyses we have right now

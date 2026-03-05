@@ -6,4 +6,4 @@
 
 
 ## Questions 
--  Which antioxidant should we focus on based on our current finding after runing the random forest and ggpicrust2? 
+-  Which antioxidant should we focus on based on our current finding after running the random forest and ggpicrust2? 

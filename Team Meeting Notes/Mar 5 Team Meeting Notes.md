@@ -12,4 +12,15 @@
   - Note: feel free to email for feedback
   - Using DAI to divide people evenly--> for the proposal can say that
   - Complete all the alpha and beta diversity metrics (do a panel) ---> make story more complete 
-  
+
+
+No results so far 
+Make sure of concise writing and thorough connections 
+Actual published research  
+Analysis and biological mechanisms need to be clear and understandable 
+Try to reduce being vague 
+Ignore the recommended daily intake and use DAI 
+Alpha and beta diversity were extended for the project 
+Removed medium levels 
+Figure out a way to normalise the data and make it a continuous variable 
+

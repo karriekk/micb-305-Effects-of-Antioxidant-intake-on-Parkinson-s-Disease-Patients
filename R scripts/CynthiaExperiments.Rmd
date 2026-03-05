@@ -45,12 +45,19 @@ metadata_pd_no_NA = metadata_pd %>%
 
 # DAI calculation -> $$Standardized\ Score = \frac{\text{Individual Intake} - \text{Mean Intake}}{\text{Standard Deviation}}$$
 
-metadata_pd_no_NA$Beta_carotene_DAI = as.vector(scale(
-  metadata_pd_no_NA$Beta_carotene))
+# metadata_pd_no_NA$Beta_carotene_DAI = as.vector(scale(
+  # metadata_pd_no_NA$Beta_carotene))
 
-head(metadata_pd_no_NA[, c("Beta_carotene", "Beta_carotene_DAI")])
+# head(metadata_pd_no_NA[, c("Beta_carotene", "Beta_carotene_DAI")])
 
-summary(metadata_pd_no_NA$Beta_carotene_DAI)
+# summary(metadata_pd_no_NA$Beta_carotene_DAI)
+
+mean_BC = mean(metadata_pd_no_NA$Beta_carotene)
+sd_BC = sd(metadata_pd_no_NA$Beta_carotene)
+metadata_pd_no_NA = metadata_pd_no_NA %>% 
+  mutate(BC_DAI = (Beta_carotene - mean_BC)/sd_BC)
+
+summary(metadata_pd_no_NA$BC_DAI)
 
 ```
 Tertile Approach (High vs. Low Contrast)

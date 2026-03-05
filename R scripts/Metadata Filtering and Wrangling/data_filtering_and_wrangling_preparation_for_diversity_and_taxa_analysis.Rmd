@@ -34,8 +34,7 @@ To analyze how varying levels of various vitamin intake changes the alpha divers
 
 Compare each of the five dietary antioxidant intake to their respective recommended dietary allowance (RDA) for Canadians established by Health Canada. Based on the paper, the PD cohort was categorized into two groups: individuals with vitamin intakes less than 2/3 of the RDA and those with intakes greater than or equal to 2/3 of the RDA.
 
--   RDA values for vitamins reference:
-    <https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/dietary-reference-intakes/tables/reference-values-vitamins.html#tbl1>)
+-   RDA values for vitamins reference: <https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/dietary-reference-intakes/tables/reference-values-vitamins.html#tbl1>)
 
 -   Note: there is no official RDA for alpha and beta carotene
 
@@ -224,7 +223,7 @@ parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>%
   relocate(Tert_BC, .after = Beta_carotene_DAI)
 ```
 
-#### Combine all five dietart antioxidants together
+#### Combine all five dietary antioxidants together
 
 ```{r dietary_antioxidant_combined}
 # Calculate the mean intake and corresponding standard deviation for each of the five dietary antioxidants across the entire PD cohort. To prepare for downstream analysis, all dietary antioxidant intakes are standardized to mg to ensure consistency in units. 

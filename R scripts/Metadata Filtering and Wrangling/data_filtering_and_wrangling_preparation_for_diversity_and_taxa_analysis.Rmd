@@ -13,7 +13,7 @@ library(tidyverse)
 ## Load the dataset
 
 ```{r load_data}
-parkinsons_metadata = read.delim('../Datasets/parkinsons_metadata.txt')
+parkinsons_metadata = read.delim('../../Datasets/Metadata/parkinsons_metadata.txt')
 ```
 
 ## Data Filtering
@@ -28,81 +28,21 @@ parkinsons_metadata_PD_cohort_NA_removed = parkinsons_metadata %>%
 
 ## Dietary Antioxidant Related Calculations
 
-To analyze how varying levels of various vitamin intake changes the alpha diversity of the gut microbiome in PD patients, we will be categorizing PD patients into groups based on their daily dietary antioxidant intake values using two different classification approaches.
+### Categorization Method:
 
-### Method 1:
-
-Compare each of the five dietary antioxidant intake to their respective recommended dietary allowance (RDA) for Canadians established by Health Canada. Based on the paper, the PD cohort was categorized into two groups: individuals with vitamin intakes less than 2/3 of the RDA and those with intakes greater than or equal to 2/3 of the RDA.
-
--   RDA values for vitamins reference: <https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/dietary-reference-intakes/tables/reference-values-vitamins.html#tbl1>)
-
--   Note: there is no official RDA for alpha and beta carotene
-
-#### Vitamin A
-
-```{r vitamin_A}
-# Vitamin A: RDA is 700 ug/day for females and 900 ug/day for males
-# Categorize vitamin A intake (mcg) based on reference RDA
-parkinsons_metadata_filt_cat = parkinsons_metadata_PD_cohort_NA_removed %>% 
-  mutate(Vitamin_A_cat = ifelse((Sex == "Female" & Vitamin_A < 2/3 * 700) | (Sex == "Male" & Vitamin_A < 2/3 * 900),
-                                "low-intake VA",
-                                "high-intake VA")) %>% 
-  relocate(Vitamin_A_cat, .after = Vitamin_A)
-# To see how many individuals in the PD cohort have low- and high-intakes of Vitamin A respectively
-parkinsons_metadata_filt_cat %>% 
-  count(Vitamin_A_cat == "low-intake VA")
-# In the PD cohort, 38 inviduals have high-intake of vitamin A, 146 individuals have low-intake of vitamin A. 
-```
-
-#### Vitamin C
-
-```{r vitamin_C}
-# Vitamin C: RDA is 75 mg/day for females and 90 mg/day for males
-# Categorize vitamin C intake (mg) based on reference RDA
-parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>% 
-  mutate(Vitamin_C_cat = ifelse((Sex == "Female" & Vitamin_C < 2/3 * 75) | (Sex == "Male" & Vitamin_C < 2/3 * 90),
-                                "low-intake VC",
-                                "high-intake VC")) %>% 
-  relocate(Vitamin_C_cat, .after = Vitamin_C)
-
-# To see how many individuals in the PD cohort have low- and high-intakes of Vitamin C respectively
-parkinsons_metadata_filt_cat %>% 
-  count(Vitamin_C_cat == "low-intake VC")
-# In the PD cohort, 164 individuals have high-intake of vitamin C, 20 individuals have low-intake of vitamin C.
-```
-
-#### Vitamin E
-
-```{r vitamin_C}
-# Vitamin E: 15 mg/day for both males and females
-# Categorize vitamin E intake (mg) based on reference RDA
-parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>% 
-  mutate(Vitamin_E_cat = ifelse(Vitamin_E < 2/3 * 15,
-                                "low-intake VE",
-                                "high-intake VE")) %>% 
-  relocate(Vitamin_E_cat, .after = Vitamin_E)
-
-# To see how many individuals in the PD corhort have low- and high-intakes of Vitamin E respectively
-parkinsons_metadata_filt_cat %>% 
-  count(Vitamin_E_cat == "low-intake VE")
-# In the PD cohort, 114 individuals have high-intake of vitamin E, 70 individuals have low-intake of vitamin E.
-```
-
-### Method 2:
-
-Use the Dietary Antioxidant Index (DAI) for analysis, which removes the need to use the RDA as a reference value. Therefore, when using this categorization method, we are able to combine all the dietary antioxidant intake together for analysis.
+Use the Dietary Antioxidant Index (DAI) method to categorize PD patients into tertiles (three even groups). This approach avoids relying on recommended dietary allowance (RDA) values, which are unavailable for certain antioxidants such as α- and β-carotene, and also reduces the risk of uneven grouping that may arise when RDA-based methods are used. (doi: 10.3389/fnut.2022.849727)
 
 #### Vitamin A
 
 ```{r vitamin_A}
 # Calculate the mean intake and corresponding standard deviation for Vitamin A across the entire PD cohort
-mean_VA = mean(parkinsons_metadata_filt_cat$Vitamin_A)
-sd_VA = sd(parkinsons_metadata_filt_cat$Vitamin_A)
+mean_VA = mean(parkinsons_metadata_PD_cohort_NA_removed$Vitamin_A)
+sd_VA = sd(parkinsons_metadata_PD_cohort_NA_removed$Vitamin_A)
 
 # Assign a DAI score to each PD patient
-parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>% 
+parkinsons_metadata_filt_cat = parkinsons_metadata_PD_cohort_NA_removed %>% 
   mutate(Vitamin_A_DAI = (Vitamin_A - mean_VA)/sd_VA) %>% 
-  relocate(Vitamin_A_DAI, .after = Vitamin_A_cat)
+  relocate(Vitamin_A_DAI, .after = Vitamin_A)
 
 # Assign categorical groups to all PD patients by splitting them into tertiles, which means all the PD patients are divided into three even groups.
 # First, find the tertiles
@@ -128,7 +68,7 @@ sd_VC = sd(parkinsons_metadata_filt_cat$Vitamin_C)
 # Assign a DAI score to each PD patient
 parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>% 
   mutate(Vitamin_C_DAI = (Vitamin_C - mean_VC)/sd_VC) %>% 
-  relocate(Vitamin_C_DAI, .after = Vitamin_C_cat)
+  relocate(Vitamin_C_DAI, .after = Vitamin_C)
 
 # Assign categorical groups to all PD patients by splitting them into tertiles, which means all the PD patients are divided into three even groups.
 # First, find the tertiles
@@ -154,7 +94,7 @@ sd_VE = sd(parkinsons_metadata_filt_cat$Vitamin_E)
 # Assign a DAI score to each PD patient
 parkinsons_metadata_filt_cat = parkinsons_metadata_filt_cat %>% 
   mutate(Vitamin_E_DAI = (Vitamin_E - mean_VE)/sd_VE) %>% 
-  relocate(Vitamin_E_DAI, .after = Vitamin_E_cat)
+  relocate(Vitamin_E_DAI, .after = Vitamin_E)
 
 # Assign categorical groups to all PD patients by splitting them into tertiles, which means all the PD patients are divided into three even groups.
 # First, find the tertiles
@@ -265,5 +205,5 @@ parkinsons_metadata_filt_cat %>% select(last_col())
 ## Export the modified dataset for downstream analyses
 
 ```{r dataset export}
-write.csv(parkinsons_metadata_filt_cat, file = "../Datasets/parkinsons_metadata_filt_cat.csv", row.names = FALSE)
+write.csv(parkinsons_metadata_filt_cat, file = "../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = FALSE)
 ```

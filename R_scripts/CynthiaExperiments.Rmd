@@ -29,35 +29,10 @@ library(Maaslin2)
 different DAI analysis method
 
 ```{r}
-metadata = read.delim('../Datasets/parkinsons_metadata.txt', row.names = 1)
+metadata = read.delim('../Datasets/Metadata/parkinsons_metadata.txt', row.names = 1)
 taxonomy = read.delim('../Datasets/taxonomy.tsv', row.names = 1) # from qiime2
 counts = read.delim('../Datasets/feature-table.txt', skip=1, row.names=1)  # from qiime2
 tree = read_tree('../Datasets/tree.nwk')
-
-# filter for only PD
-metadata_pd = metadata %>%
-  filter(Disease == "PD")
-sum(is.na(metadata_pd$Beta_carotene)) 
-# 13 NA values in the Beta_carotene column that I will be removing them for this analysis
-
-metadata_pd_no_NA = metadata_pd %>%
-  filter(!is.na(Beta_carotene))
-
-# DAI calculation -> $$Standardized\ Score = \frac{\text{Individual Intake} - \text{Mean Intake}}{\text{Standard Deviation}}$$
-
-# metadata_pd_no_NA$Beta_carotene_DAI = as.vector(scale(
-  # metadata_pd_no_NA$Beta_carotene))
-
-# head(metadata_pd_no_NA[, c("Beta_carotene", "Beta_carotene_DAI")])
-
-# summary(metadata_pd_no_NA$Beta_carotene_DAI)
-
-mean_BC = mean(metadata_pd_no_NA$Beta_carotene)
-sd_BC = sd(metadata_pd_no_NA$Beta_carotene)
-metadata_pd_no_NA = metadata_pd_no_NA %>% 
-  mutate(BC_DAI = (Beta_carotene - mean_BC)/sd_BC)
-
-summary(metadata_pd_no_NA$BC_DAI)
 
 ```
 Tertile Approach (High vs. Low Contrast)

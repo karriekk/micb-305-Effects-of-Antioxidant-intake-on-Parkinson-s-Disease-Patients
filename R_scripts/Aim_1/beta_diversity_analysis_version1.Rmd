@@ -4,6 +4,7 @@ author: Yanting Xiong
 output: html_document
 date: "2026-03-15"
 ---
+
 ## Library loading
 
 ```{r libraries, include = FALSE}
@@ -13,6 +14,7 @@ library(vegan)
 ```
 
 ## Dataset loading
+
 ```{r load_data}
 parkinsons_metadata_filt_cat = read.csv('../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
 
@@ -95,6 +97,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 ```
 
 ## Beta Diversity Analysis
+
 ```{r calculate beta-curtis distances}
 ps_bray = phyloseq::distance(psrare, method = "bray")
 # View(as.matrix(ps_bray)) # Every pairwise comparison included
@@ -110,6 +113,7 @@ head(mds_data)
 ```
 
 ### Beta carotene
+
 ```{r beta_diversity_analysis_for_beta_carotene}
 # Plot it
 p_BC = mds_data %>% 
@@ -157,6 +161,7 @@ stats_multivar_BC_LH_rerun = adonis2(ps_bray_sub_BC_LH ~ Tert_BC + Age + entacap
 ```
 
 ### Alpha carotene
+
 ```{r beta_diversity_analysis_for_alpha_carotene}
 # Plot it
 p_AC = mds_data %>% 
@@ -201,6 +206,7 @@ stats_multivar_AC_LH_rerun = adonis2(ps_bray_sub_AC_LH ~ Tert_AC + Age + entacap
 ```
 
 ### Vitamin C
+
 ```{r beta_diversity_analysis_for_vitamin_c}
 # Plot it
 p_VC = mds_data %>% 
@@ -244,7 +250,9 @@ stats_multivar_VC_LH_rerun = adonis2(ps_bray_sub_VC_LH ~ Tert_VC + Age + entacap
                                      data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH))
 
 ```
+
 ### Vitamin A
+
 ```{r beta_diversity_analysis_for_vitamin_a}
 # Plot it
 p_VA = mds_data %>% 
@@ -288,7 +296,9 @@ stats_multivar_VA_LH_rerun = adonis2(ps_bray_sub_VA_LH ~ Tert_VA + Age + entacap
                                      data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH))
 
 ```
+
 ### Vitamin E
+
 ```{r beta_diversity_analysis_for_vitamin_e}
 # Plot it
 p_VE = mds_data %>% 
@@ -339,9 +349,9 @@ stats_multivar_VE_LH_rerun = adonis2(ps_bray_sub_VE_LH ~ Tert_VE + Age + entacap
 p_combine = mds_data %>% 
   ggplot(aes(MDS1, MDS2, color = Tert_combine)) +
   geom_point() +
-  stat_ellipse() +
+  stat_ellipse() + 
   theme_classic(base_size = 18) +
-  labs(color = "Combined Intake Categorization")
+  labs(color = "Categorization of Combined Dietary Antioxidant Intake", title = "Beta Diversity Analysis on Combined Dietary Antioxidant Intake")
 p_combine
 
 # PERMANOVA test
@@ -360,11 +370,15 @@ stats_combine = bind_rows("Univariate" = stats_univar_combine %>% as.data.frame(
 
 stats_combine = stats_combine %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+# Based on the stats_combine table, the p-value for both "age" and "entacapone" is 0.017, which is smaller than 0.05, meaning that both "age" and "entacapone" have a significant impact on the gut microbiome, and therefore should be controlled for in downstream analyses. 
+```
 
-# List samples that belong to the categories of interest
+#### "Combine Low" vs. "Combine High"
+```{r}
+# List samples that belong to the categories of interest (low and high)
 to_compare_combine_LH = c("Combine Low", "Combine High")
 
-# List samples that belong to these categories of interest (low and high)
+# List samples that belong to these categories of interest 
 samples_to_keep_combine_LH = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH) %>%
   rownames()
 
@@ -374,5 +388,52 @@ ps_bray_sub_combine_LH = as.matrix(ps_bray)[samples_to_keep_combine_LH, samples_
 
 # Run a PERMANOVA test again and account for the real confounding variables
 stats_multivar_combine_LH_rerun = adonis2(ps_bray_sub_combine_LH ~ Tert_combine + Age + entacapone,
-                                     data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH))
+                                          data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH))
+stats_multivar_combine_LH_rerun # p-value is 0.012, indicating a significant difference 
+```
+
+#### "Combine Low" vs. "Combine Medium"
+```{r}
+# List samples that belong to the categories of interest (low and medium)
+to_compare_combine_LM = c("Combine Low", "Combine Medium")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_combine_LM = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LM) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_bray_sub_combine_LM = as.matrix(ps_bray)[samples_to_keep_combine_LM, samples_to_keep_combine_LM] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+stats_multivar_combine_LM_rerun = adonis2(ps_bray_sub_combine_LM ~ Tert_combine + Age + entacapone,
+                                          data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LM))
+stats_multivar_combine_LM_rerun # p-value is 0.105 --> no significant difference
+```
+
+#### "Combine Medium" vs. "Combine High"
+```{r}
+# List samples that belong to the categories of interest (medium and high)
+to_compare_combine_MH = c("Combine Medium", "Combine High")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_combine_MH = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_MH) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_bray_sub_combine_MH = as.matrix(ps_bray)[samples_to_keep_combine_MH, samples_to_keep_combine_MH] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+stats_multivar_combine_MH_rerun = adonis2(ps_bray_sub_combine_MH ~ Tert_combine + Age + entacapone,
+                                          data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_MH))
+stats_multivar_combine_MH_rerun # p-value is 0.002, indicating a significant difference
+```
+
+#### Save plot
+```{r}
+# Save plot
+#ggsave("../../Results/Figures/Beta Diversity Analysison Combined Dietary Antioxidants.jpeg",
+       #plot = p_combine,
+       #height = 13, width = 17, dpi = 300)
 ```

@@ -1,0 +1,483 @@
+---
+title: "Alpha Diversity Analysis (Version 1)"
+author: Yanting Xiong
+output: html_document
+---
+
+```{r libraries, include = FALSE}
+library(tidyverse)
+library(phyloseq)
+library(ggplot2)
+library(dplyr)
+library(vegan)
+library(broom)
+```
+
+## Load the data
+
+```{r load_data}
+parkinsons_metadata_filt_cat = read.csv('../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
+counts = read.delim('../QIIME2_outputs/feature-table.txt', skip = 1, row.names = 1)
+taxonomy = read.delim('../QIIME2_outputs/taxonomy.tsv', row.names = 1)
+```
+
+## Make a Phyloseq object
+
+```{r Create a Phyloseq object}
+taxonomy_formatted = taxonomy %>% 
+  separate(col = Taxon,
+           into = c("Domain", "Phylum", "Class", "Order", "Family",
+                    "Genus", "Species"),
+           sep = ";", fill = "right") %>% 
+  select(-Confidence) %>% 
+  as.matrix()
+
+counts_formatted = counts %>% as.matrix()
+
+ps = phyloseq(sample_data(parkinsons_metadata_filt_cat),
+              otu_table(counts_formatted, taxa_are_rows = T),
+              tax_table(taxonomy_formatted))
+```
+
+## Alpha rarefaction curve
+
+```{r alpha_rarefaction}
+# Alpha rarefaction curve
+rarecurve(t(data.frame(ps@otu_table)),
+          step = 1000)
+
+# Based on the alpha rarefaction curve and the PD-filtered-table.qzv results, a sampling depth of 6515 will be chosen because at this sampling depth, only 14 samples are excluded from the analysis and we have retained 1,192,428 (50.04%) features in 183 (92.89%) samples at this specified sampling depth.
+
+# Rarefy the data based on the rarefaction depth chosen
+set.seed(421)
+psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
+```
+
+## Alpha Diversity Analysis
+
+### Beta carotene
+
+```{r alpha_diversity_analysis_for_beta_carotene}
+set.seed(421)
+p_BC = plot_richness(psrare, x = "Tert_BC",
+                     measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                     color = "Tert_BC")
+p_BC
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_BC = p_BC$data
+
+pdata_BC$Tert_BC = fct_relevel(
+  pdata_BC$Tert_BC,
+  "BC Low",
+  "BC Medium",
+  "BC High"
+)
+
+str(pdata_BC) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC, 
+                                         value, 
+                                         fill = Tert_BC)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Beta Carotene Intake Categorization")
+p_BC_formatted
+
+
+comparisons_BC = list(c("BC High", "BC Low"),
+                      c("BC High", "BC Medium"),
+                      c("BC Low", "BC Medium"))
+
+stats_BC = pdata_BC %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_BC) {
+      temp = .x %>% filter(Tert_BC %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_BC + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_BC)
+```
+
+### Alpha carotene
+```{r alpha_diversity_analysis_for_alpha_carotene}
+set.seed(421)
+p_AC = plot_richness(psrare, x = "Tert_AC",
+                     measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                     color = "Tert_AC")
+p_AC
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_AC = p_AC$data
+
+pdata_AC$Tert_AC = fct_relevel(
+  pdata_AC$Tert_AC,
+  "AC Low",
+  "AC Medium",
+  "AC High"
+)
+
+str(pdata_AC) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC, 
+                                         value, 
+                                         fill = Tert_AC)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Alpha Carotene Intake Categorization")
+p_AC_formatted
+
+
+comparisons_AC = list(c("AC High", "AC Low"),
+                      c("AC High", "AC Medium"),
+                      c("AC Low", "AC Medium"))
+
+stats_AC = pdata_AC %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_AC) {
+      temp = .x %>% filter(Tert_AC %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_AC + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_AC)
+```
+
+### Vitamin C
+```{r alpha_diversity_analysis_for_vitamin_c}
+set.seed(421)
+p_VC = plot_richness(psrare, x = "Tert_VC",
+                     measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                     color = "Tert_VC")
+p_VC
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_VC = p_VC$data
+
+pdata_VC$Tert_VC = fct_relevel(
+  pdata_VC$Tert_VC,
+  "VC Low",
+  "VC Medium",
+  "VC High"
+)
+
+str(pdata_VC) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC, 
+                                         value, 
+                                         fill = Tert_VC)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Vitamin C Intake Categorization")
+p_VC_formatted
+
+
+comparisons_VC = list(c("VC High", "VC Low"),
+                      c("VC High", "VC Medium"),
+                      c("VC Low", "VC Medium"))
+
+stats_VC = pdata_VC %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_BC) {
+      temp = .x %>% filter(Tert_VC %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_VC + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_VC)
+```
+
+### Vitamin A
+```{r alpha_diversity_analysis_for_vitamin_a}
+set.seed(421)
+p_VA = plot_richness(psrare, x = "Tert_VA",
+                     measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                     color = "Tert_VA")
+p_VA
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_VA = p_VA$data
+
+pdata_VA$Tert_VA = fct_relevel(
+  pdata_VA$Tert_VA,
+  "VA Low",
+  "VA Medium",
+  "VA High"
+)
+
+str(pdata_VA) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA, 
+                                         value, 
+                                         fill = Tert_VA)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Vitamin A Intake Categorization")
+p_VA_formatted
+
+
+comparisons_VA = list(c("VA High", "VA Low"),
+                      c("VA High", "VA Medium"),
+                      c("VA Low", "VA Medium"))
+
+stats_VA = pdata_VA %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_VA) {
+      temp = .x %>% filter(Tert_VA %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_VA + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_VA)
+```
+
+### Vitamin E
+```{r alpha_diversity_analysis_for_vitamin_e}
+set.seed(421)
+p_VE = plot_richness(psrare, x = "Tert_VE",
+                     measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                     color = "Tert_VE")
+p_VE
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_VE = p_VE$data
+
+pdata_VE$Tert_VE = fct_relevel(
+  pdata_VE$Tert_VE,
+  "VE Low",
+  "VE Medium",
+  "VE High"
+)
+
+str(pdata_VE) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE, 
+                                         value, 
+                                         fill = Tert_VE)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Vitamin E Intake Categorization")
+p_VE_formatted
+
+
+comparisons_VE = list(c("VE High", "VE Low"),
+                      c("VE High", "VE Medium"),
+                      c("VE Low", "VE Medium"))
+
+stats_VE = pdata_VE %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_VE) {
+      temp = .x %>% filter(Tert_VE %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_VE + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_VE)
+```
+
+### Combine all five dietary antioxidants together
+```{r alpha_diversity_analysis_for_all_dietary_antioxidants}
+set.seed(421)
+p_combine = plot_richness(psrare, x = "Tert_combine",
+                          measures = c("Observed", "Shannon", "Chao1", "Simpson"),
+                          color = "Tert_combine")
+p_combine
+
+# Modify the graph
+# Pull the data from the plot:
+pdata_combine = p_combine$data
+
+pdata_combine$Tert_combine = fct_relevel(
+  pdata_combine$Tert_combine,
+  "Combine Low",
+  "Combine Medium",
+  "Combine High"
+)
+
+str(pdata_combine) # variable denotes metric, value denotes value
+
+# Graph the plot again
+p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine, 
+                                                   value, 
+                                                   fill = Tert_combine)) +
+  geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
+  geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
+  # Add some formatting
+  theme_classic(base_size = 16) +
+  facet_wrap(~ variable, ncol = 2, scales = "free_y") +
+  ylab("Alpha Diversity Metrics") + xlab(NULL) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  labs(fill = "Combine Dietary Antioxidant Intake Categorization")
+p_combine_formatted
+
+
+comparisons_combine = list(c("Combine High", "Combine Low"),
+                           c("Combine High", "Combine Medium"),
+                           c("Combine Low", "Combine Medium"))
+
+stats_combine = pdata_combine %>% group_by(variable) %>% # running each metric concurrently
+  group_modify(~ {
+    # now we'll run our single test for each of the above comparisons
+    
+    temp_stats = data.frame() # where we'll put our stats
+    
+    for (i in comparisons_combine) {
+      temp = .x %>% filter(Tert_combine %in% i) 
+      
+      linear_regression = lm(formula = value ~ Tert_combine + Age + Sex + Energy_kcal,
+                             data = temp, conf.int = T) %>% 
+        broom::tidy() %>% 
+        mutate(group1 = i[1], group2 = i[2],
+            .before = "estimate")
+      
+      # add to temp_stats
+      temp_stats = bind_rows(temp_stats, linear_regression) 
+    }
+    
+    # add adjusted p-values
+    temp_stats = temp_stats %>% 
+      mutate(padj = p.adjust(p.value, method = "BH"), .after = "p.value")
+    
+    return(temp_stats)
+  }
+ ) %>% 
+  ungroup()
+
+View(stats_combine)
+```

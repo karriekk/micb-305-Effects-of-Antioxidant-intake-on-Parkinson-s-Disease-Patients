@@ -34,6 +34,17 @@ To achieve this goal, we will first filter the metadata to include only PD patie
   - Figures
 
 #### Aim 2: Taxonomy Analysis
+- Indicator taxa analysis
+
+  - R script
+
+  - Tables
+
+- Differential abundance analysis
+
+  - R script
+ 
+  - Tables
 
 #### Aim 3: Metabolic Pathway Analysis
 

@@ -39,7 +39,7 @@ diff_abun = pathway_daa(abundance = path_filt,
                    metadata = metadata,
                    group = "Tert_AC",
                    daa_method = "Maaslin2",
-                   fixed_effects = c("Sex", "Age", "entacapone", "Energy_kcal"),
+                   fixed_effects = c("Sex", "Age", "entacapone"),
                    select = NULL,
                    reference = "AC Low")
 

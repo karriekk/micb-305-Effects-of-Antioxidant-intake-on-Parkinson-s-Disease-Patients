@@ -1,5 +1,5 @@
 ---
-title: "Indicator Taxa Analysis - compares only high and low intake groups (Version 1)"
+title: "Indicator Species Analysis - compares only high and low intake groups (Version 1)"
 author: Yanting Xiong
 output: html_document
 date: "2026-03-16"

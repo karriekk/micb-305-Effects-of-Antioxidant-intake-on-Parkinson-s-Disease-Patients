@@ -1,5 +1,6 @@
 ---
-title: "Indicator taxa"
+title: "Indicator species"
+author: Carrie Sun
 output: html_document
 ---
 Library Loading

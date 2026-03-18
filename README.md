@@ -40,6 +40,8 @@ To achieve this goal, we will first filter the metadata to include only PD patie
 
   - Tables
 
+  - Figures
+
 - Differential abundance analysis
 
   - R script

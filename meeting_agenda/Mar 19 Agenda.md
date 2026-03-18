@@ -7,4 +7,4 @@
 
 5. Would it be possible to go over the code together to ensure that we are doing all the analyses correctly and logically?
 
-** Good news: found some SCFA-producing bacteria when doing the indicator taxa analysis!!!
+** Good news: found some SCFA-producing bacteria when doing the indicator taxa analysis!!! 😆

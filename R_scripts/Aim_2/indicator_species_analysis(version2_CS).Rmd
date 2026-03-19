@@ -9,6 +9,7 @@ library(indicspecies)
 library(tidyverse)
 library(phyloseq)
 ```
+
 ## Dataset Loading
 
 ```{r loading_dataset}
@@ -118,6 +119,7 @@ dim(filtered_data_ac)
 
 # No indicator taxa shown for Alpha carotene group
 ```
+
 ## Vitamin A indicator Species Anlysis
 
 ```{r vitamin_a}
@@ -146,6 +148,7 @@ dim(filtered_data_VA)
 
 # No indicator taxa shown for Vitamin A group
 ```
+
 ## Vitamin C Indicator Species Analysis
 
 ```{r vitamin_c}
@@ -174,6 +177,7 @@ dim(filtered_data_VC)
 
 # No indicator taxa shown for Vitamin C group
 ```
+
 ## Vitamin E Indicator Species Analysis
 
 ```{r vitamin_e}

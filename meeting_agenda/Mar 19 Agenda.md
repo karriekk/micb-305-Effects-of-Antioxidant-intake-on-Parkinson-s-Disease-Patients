@@ -20,7 +20,7 @@
 
 ### Picrust analysis
 (BC, AC, VC, combine)
-- Found significance in BC, VC groups with p < 0.05 with VC being more significant with pathways having p_adjust = 0.039
+- Found significance in BC, VC groups with p < 0.05 with VC being more significant with pathways having p_adjust = 0.0029
   - Interesting that high intake groups had general down regulation of pathways in comparison to low intake groups, out of these TCA VII (acetate production) is the significant across both groups
   - Was unsure about this result but double checked with other antioxidant groups and they observed same thing
 - Picrust analysis was also done with only only and high intake groups which means we are missing a third of the population -> discuss on a way to either include them or have clear rationale as to why not

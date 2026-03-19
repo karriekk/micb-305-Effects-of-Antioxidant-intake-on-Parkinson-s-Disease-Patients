@@ -15,8 +15,12 @@
   - Yanting did a indicator taxa analysis which compares only high and low groups (as she filtered high and low group out first), but Carrie has the default code on the MICB305 GiHhub. Is it necessary to compare all 3 or just high and low is enough?
       - One issue when comparing three groups together is that there are some cases where some taxa are significantly abundant in both high and low groups.
       - And one limitation associated with including only the high and low groups in the analysis is that we're excluding 1/3 of the PD patients.
+   
+### Differential abundance analysis
+- Did not find any taxa that are differentially abundant in the high intake group for all dietary antioxidants (diff_robust are all FALSE when high intake group is compared to the low intake group)
+
 ### Picrust analysis
-- found significance in BC, VC groups with p < 0.05
-- interesting that high intake groups had general down regulation of pathways in comparison to low intake groups.
-- was unsure about this result but double checked with other antioxidant groups and they observed same thing
-- contradicts aim 2?
+- Found significance in BC, VC groups with p < 0.05
+- Interesting that high intake groups had general down regulation of pathways in comparison to low intake groups.
+- Was unsure about this result but double checked with other antioxidant groups and they observed same thing
+- Contradicts aim 2?

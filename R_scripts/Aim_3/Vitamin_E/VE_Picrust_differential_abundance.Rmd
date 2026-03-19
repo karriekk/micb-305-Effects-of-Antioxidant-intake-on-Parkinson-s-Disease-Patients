@@ -1,6 +1,6 @@
 ---
-title: "VA_Picrust_differential_abundance"
-author: "Emily"
+title: "VE_Picrust_differential_abundance"
+author: "Cynthia"
 date: "2026-03-17"
 output: html_document
 ---
@@ -21,8 +21,8 @@ When you click the **Knit** button a document will be generated that includes bo
   
 ```{r}
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
-metadata_sub = metadata %>% filter(Tert_VA %in% c("VA Low", "VA High")) %>%
-  mutate(Tert_VA = fct_drop(as.factor(Tert_VA)))
+metadata_sub = metadata %>% filter(Tert_VE %in% c("VE Low", "VE High")) %>%
+  mutate(Tert_VE = fct_drop(as.factor(Tert_VE)))
 ```
 
 ggpicrust2 to run "Maaslin2", another common differential abundance tool, on your groups of interest and add pathway annotations
@@ -38,11 +38,11 @@ path_filt = pathway_abundance %>% select(all_of(rownames(metadata_sub)))
 
 diff_abun = pathway_daa(abundance = path_filt,
                         metadata = metadata,
-                        group = "Tert_VA",
+                        group = "Tert_VE",
                         daa_method = "Maaslin2",
-                        fixed_effects = c("Sex", "Age", "entacapone", "Energy_kcal"),
+                        fixed_effects = c("Sex", "Age", "entacapone"),
                         select = NULL,
-                        reference = "VA Low")
+                        reference = "VE Low")
 
 daa_annotated_results_df = pathway_annotation(pathway = "MetaCyc",
                                               daa_results_df = diff_abun,
@@ -62,17 +62,17 @@ source('../ggpicrust2_errorbar_function_fixed.R')
 daa_annotated_results_df_filt = daa_annotated_results_df %>%
   filter(!is.na(p_adjust), !is.na(log2_fold_change))
 
-# Adjusted P-value = 17 hits
+# Adjusted p-value = 8 hits
 daa_annotated_results_df_filt %>% 
-  filter(p_adjust < 1) %>% 
+  filter(p_adjust < 0.09) %>% 
   nrow()
 
-# Log2 Fold Change values = 8 hits (sufficient for plot)
+# Log2 Fold Change VElues = 19 hits (sufficient for plot)
 daa_annotated_results_df_filt %>% 
   filter(abs(log2_fold_change) >= 4e-3) %>% 
   nrow()
 
-daa_annotated_results_df_filt %>% filter(p_adjust< 0.005, abs(log2_fold_change) > 4e-3) %>% nrow()
+daa_annotated_results_df_filt %>% filter(p_adjust< 0.09, abs(log2_fold_change) > 4e-3) %>% nrow()
 
 # Dataframe for plotting
 daa_plot <- daa_annotated_results_df %>%
@@ -83,10 +83,10 @@ nrow(daa_plot)
 
 peb <- pathway_errorbar_fixed(abundance = path_filt,
                               daa_results_df = daa_plot,
-                              Group = metadata_sub$Tert_VA,
+                              Group = metadata_sub$Tert_VE,
                               wrap_label = TRUE,wraplength = 60,
                               fc_cutoff = 4e-3,order_by_log = TRUE,
-                              p_values_threshold = 1,
+                              p_values_threshold = 0.09,
                               order = "name",
                               ko_to_kegg = FALSE,
                               p_value_bar = TRUE,
@@ -101,10 +101,10 @@ peb_final <- peb + plot_annotation(tag_levels = 'A')
 peb_final
 
 # Save the final version with the tags
-ggsave("VA-picrust-final-with-labels.png", plot = peb_final, width = 12, height = 7, dpi = 300)
+ggsave("VE-picrust-final-with-labels.png", plot = peb_final, width = 12, height = 7, dpi = 300)
 
 
-ggsave("VA-picrust-sig-pathways.png",
+ggsave("VE-picrust-sig-pathways.png",
        plot = peb, width = 18, height = 10)
 ```
 
@@ -154,13 +154,13 @@ pheatmap(stats,
          color = color_palette, 
          breaks = breaks,
          border_color = "white",       # Clean white borders between cells
-         display_numbers = TRUE,       # Optional: shows the actual R values
+         display_numbers = TRUE,       # Optional: shows the actual R VElues
          number_color = "black",
          fontsize_row = 12,            # Slightly larger for readability
          fontsize_col = 12,
          angle_col = 45,               # Tilt labels so they don't overlap
          main = '',
-         filename = "../../../Results/Figures/Aim_3/MetaCyc-VA_Heatmap_Final.png",
+         filename = "../../../Results/Figures/Aim_3/MetaCyc-VE_Heatmap_Final.png",
          height = 8, width = 10)       # Wider to accommodate long names
 
 
@@ -181,7 +181,7 @@ pheatmap(stats,
          treeheight_col = 25, 
          legend = TRUE,               
          main = NA,                   # Use NA to properly suppress the title space
-         filename = "../../../Results/Figures/Aim_3/MetaCyc-VA_Heatmap_Final-new.png",
+         filename = "../../../Results/Figures/Aim_3/MetaCyc-VE_Heatmap_Final-new.png",
          width = 8,                   # Increased slightly for your long pathway names
          height = 6)
 
@@ -192,6 +192,6 @@ See how similar your sample groups are
 # Generate pathway PCA plot
 pathway_pca(abundance = path_filt,
             metadata = metadata_sub, 
-            group = "Tert_VA")
+            group = "Tert_VE")
 ```
 

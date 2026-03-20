@@ -80,6 +80,8 @@ out_BC = ancombc2(data = ps_filt,
 statistical_table_BC = out_BC$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "BC Low" and "BC High" groups
+statistical_table_BC_filt = statistical_table_BC %>% 
+  filter(`diff_robust_Tert_BCBC High` == T) # 0 observation
 
 ```
 
@@ -99,6 +101,8 @@ out_AC = ancombc2(data = ps_filt,
 statistical_table_AC = out_AC$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "AC Low" and "AC High" groups
+statistical_table_AC_filt = statistical_table_AC %>% 
+  filter(`diff_robust_Tert_ACAC High` == T) # 0 observation
 ```
 
 ## Vitamin A
@@ -117,6 +121,8 @@ out_VA = ancombc2(data = ps_filt,
 statistical_table_VA = out_VA$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "AC Low" and "AC High" groups
+statistical_table_VA_filt = statistical_table_VA %>% 
+  filter(`diff_robust_Tert_VAVA High` == T) # 0 observation
 ```
 
 ## Vitamin C
@@ -135,6 +141,8 @@ out_VC = ancombc2(data = ps_filt,
 statistical_table_VC = out_VC$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "AC Low" and "AC High" groups
+statistical_table_VC_filt = statistical_table_VC %>% 
+  filter(`diff_robust_Tert_VCVC High` == T) # 0 observation
 ```
 
 ## Vitamin E
@@ -153,6 +161,8 @@ out_VE = ancombc2(data = ps_filt,
 statistical_table_VE = out_VE$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "AC Low" and "AC High" groups
+statistical_table_VE_filt = statistical_table_VE %>% 
+  filter(`diff_robust_Tert_VEVE High` == T) # 0 observation
 ```
 
 ## Combined Dietary Antioxidant Intake
@@ -171,4 +181,6 @@ out_combine = ancombc2(data = ps_filt,
 statistical_table_combine = out_combine$res
 
 # Filter the statistical table to only include taxa that are differentially abundant between "AC Low" and "AC High" groups
+statistical_table_combine_filt = statistical_table_combine %>% 
+  filter(`diff_robust_Tert_combineCombine High` == T) # 0 observation
 ```

@@ -53,6 +53,7 @@ saveRDS(daa_annotated_results_df,'daa_annotated_results_df.rds')
 readRDS('daa_annotated_results_df.rds')
 
 ```
+Sanity Check/Manual
 ```{r}
 # STEP 1: Convert your counts to relative abundance
 
@@ -113,8 +114,12 @@ daa_results_log2fc_filtered = daa_annotated_results_df %>%
 
 # Adjusted P-value = 17 hits
 daa_results_log2fc_filtered %>% 
-  filter(p_adjust < 0.0028) %>% 
+  filter(p_adjust < 0.05) %>% 
   nrow()
+
+significant_pathways = daa_results_log2fc_filtered %>% 
+  filter(p_adjust < 0.05) %>%
+  pull(feature)
 
 # Then use that in your plot function
 # Note that I had to increase the Padj cutoff to get enough to plot!
@@ -142,7 +147,7 @@ daa_annotated_results_df_filt = daa_annotated_results_df %>%
 
 # Adjusted P-value = 17 hits
 daa_annotated_results_df_filt %>% 
-  filter(p_adjust < 0.005) %>% 
+  filter(p_adjust < 0.05) %>% 
   nrow()
 
 # Log2 Fold Change values = 8 hits (sufficient for plot)

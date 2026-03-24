@@ -1,6 +1,8 @@
 ## Answers to our Questions
 1. For the beta-diversity plots, it is sufficient to note in the figure legend that potential confounding variables were accounted for in the statistical analyses. This helps explain why statistically significant p-values (p < 0.05) may be observed even when group differences are not visually apparent in the plots.
-2. Need to re-do the alpha diversity analysis. In terms of the p-values, they can be manually added onto the plots using a software called Affinity.
+2. For the alpha diversity analysis, there are two different options depending on what we are doing:
+  - For linear regression specifically, the library(ggpmisc) package is good (code reference: https://stackoverflow.com/questions/7549694/add-regression-line-equation-and-r2-on-graph; https://www.rdocumentation.org/packages/ggpmisc/versions/0.6.3/topics/stat_poly_line)
+  - Alternatively just save the statistical values and manually add onto the graph, e.g., using Affinity.
 3. To reference column names that contain spaces, use backticks (`) rather than single quotation marks (' ').
 4. For the indicator taxa analysis, an appropriate and reasonable stat cutoff should be selected to ensure meaningful and reliable filtering of the results. It is also important to state the limitation of this analysis in our manuscript. When visualizing the data, it is recommended to include all groups, including the medium group, to illustrate the overall trends. Boxplots can be generated using the unfiltered phyloseq object by selecting taxa identified as significant and plotting their relative abundances across groups. The presence of many zero values in the boxplots is acceptable. Statistical significance (p-values) may be added manually to the plots where appropriate.
 5. Remember to email Imogen to validate and discuss about the weird difference between log2fold change in our table and graphs. Also need to double-check pathway differential abundance analysis R scripts.

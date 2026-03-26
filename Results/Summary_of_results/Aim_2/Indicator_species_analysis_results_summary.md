@@ -9,15 +9,27 @@
 
 ### Indicator Taxa for Beta Carotene
 - Indicator taxa associated with the high intake group
-  1.  (feature ID: 630532cabb74720c1204579e6fe741b4)
-     - p-value: 0.045
-     - stat: 0.403
+1. Cloacibacillus (feature ID: 630532cabb74720c1204579e6fe741b4)
+   - p-value: 0.045
+   - stat: 0.403
 
-a030e5d5ff9c75a027e6cc58ff02cf7c
+3. Alloprevotella (feature ID: a030e5d5ff9c75a027e6cc58ff02cf7c)
+   - p-value: 0.026
+   - stat: 0.370
+  
+- Indicator taxa associated with the low intake group
+1. Escherichia-Shigella (feature ID: 4c8288bfbd76958c0c094d87b97650f8)
+   - p-value: 0.006
+   - stat: 0.715
+  
+### Indicator Taxa for Vitamin A
+- Indicator taxa associated with the high intake group
+1. Acidaminococcus (feature ID: 7bf7ea59cac793e65c0bc293eabf44dc)
+   - p-value: 0.045
+   - stat: 0.388
 
-4c8288bfbd76958c0c094d87b97650f8
+2. 
 
-7bf7ea59cac793e65c0bc293eabf44dc
 
 b287c87a16ef231b6b93625eceae36b1
 

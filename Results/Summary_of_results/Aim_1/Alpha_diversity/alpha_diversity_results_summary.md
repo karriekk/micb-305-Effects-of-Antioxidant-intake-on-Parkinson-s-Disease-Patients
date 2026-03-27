@@ -1,5 +1,9 @@
 ## Summary of results for alpha diversity analysis 
 
+### Notes:
+1. Because we will be controlling for entacapone in downstream analyses and it contains NA values, they will be removed from the filtered metadata.
+   - 10 PD patients are removed because they do not have entacapone intakes recorded.
+
 ### Section 1: alpha-rarefaction curve
 - A sampling depth of 6515 was chosen because at this sampling depth, only 14 samples are excluded from the analysis and we have retained 1,192,428 (50.04%) features in 183 (92.89%) samples.
   <img width="1187" height="436" alt="Screenshot 2026-03-26 at 9 40 44" src="https://github.com/user-attachments/assets/fb14276e-0c7b-4e36-8679-536507f4c662" />

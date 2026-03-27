@@ -1,5 +1,9 @@
 ## Beta Diversity Analysis using Bray-Curtis
-- Note: when running beta-diversity analysis, age, sex, and entacapone were accounted for as confounding variables
+
+### Notes:
+1. Because we will be controlling for entacapone in downstream analyses and it contains NA values, they will be removed from the filtered metadata.
+   - 10 PD patients are removed because they do not have entacapone intakes recorded.
+2. When running beta-diversity analysis, age, sex, and entacapone are accounted for as confounding variables.
 
 ### Beta diversity analysis of Beta Carotene
 <img width="1438" height="885" alt="Screenshot 2026-03-26 at 13 56 42" src="https://github.com/user-attachments/assets/1e012df1-0b15-4167-abbe-6023f8c45ce6" />

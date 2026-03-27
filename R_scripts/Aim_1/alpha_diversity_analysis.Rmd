@@ -1,5 +1,5 @@
 ---
-title: "Alpha Diversity Analysis (Version 1)"
+title: "Alpha Diversity Analysis"
 author: Yanting Xiong
 output: html_document
 ---

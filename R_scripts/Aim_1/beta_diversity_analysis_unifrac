@@ -261,7 +261,7 @@ ps_unifrac_sub_AC_LH = as.matrix(ps_unifrac)[samples_to_keep_AC_LH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_AC_LH = adonis2(ps_unifrac_sub_AC_LH ~ Tert_AC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LH)) #p-value is 0.129 
+                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LH)) 
 ```
 
 #### "AC Low" vs. "AC Medium"
@@ -280,7 +280,7 @@ ps_unifrac_sub_AC_LM = as.matrix(ps_unifrac)[samples_to_keep_AC_LM, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_AC_LM = adonis2(ps_unifrac_sub_AC_LH ~ Tert_AC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LM)) #p-value is 0.129 
+                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LM)) 
 ```
 
 ### Vitamin C
@@ -335,7 +335,7 @@ ps_unifrac_sub_VC_LH = as.matrix(ps_unifrac)[samples_to_keep_VC_LH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_LH = adonis2(ps_unifrac_sub_VC_LH ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH)) # p-value is 0.006
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH)) 
 
 ```
 
@@ -355,7 +355,7 @@ ps_unifrac_sub_VC_LM = as.matrix(ps_unifrac)[samples_to_keep_VC_LM, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_LM = adonis2(ps_unifrac_sub_VC_LM ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LM)) # p-value is 0.258
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LM)) 
 
 ```
 
@@ -375,7 +375,7 @@ ps_unifrac_sub_VC_MH = as.matrix(ps_unifrac)[samples_to_keep_VC_MH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_MH = adonis2(ps_unifrac_sub_VC_MH ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_MH)) # p-value is 0.002
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_MH)) 
 
 ```
 
@@ -431,7 +431,7 @@ ps_unifrac_sub_VA_LH = as.matrix(ps_unifrac)[samples_to_keep_VA_LH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VA_LH = adonis2(ps_unifrac_sub_VA_LH ~ Tert_VA + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH)) # p-value is 0.06
+                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH)) 
 
 ```
 
@@ -487,7 +487,7 @@ ps_unifrac_sub_VE_LH = as.matrix(ps_unifrac)[samples_to_keep_VE_LH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_LH = adonis2(ps_unifrac_sub_VE_LH ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LH)) # p-value is 0.001
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LH)) 
 
 ```
 
@@ -507,7 +507,7 @@ ps_unifrac_sub_VE_LM = as.matrix(ps_unifrac)[samples_to_keep_VE_LM, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_LM = adonis2(ps_unifrac_sub_VE_LM ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LM)) # p-value is 0.009
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LM)) 
 
 ```
 
@@ -527,7 +527,7 @@ ps_unifrac_sub_VE_MH = as.matrix(ps_unifrac)[samples_to_keep_VE_MH, samples_to_k
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_MH = adonis2(ps_unifrac_sub_VE_MH ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_MH)) # p-value is 0.009
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_MH)) 
 
 ```
 
@@ -584,7 +584,7 @@ ps_unifrac_sub_combine_LH = as.matrix(ps_unifrac)[samples_to_keep_combine_LH, sa
 set.seed(421)
 stats_multivar_combine_LH = adonis2(ps_unifrac_sub_combine_LH ~ Tert_combine + Age + entacapone + Sex,
                                     data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH))
-stats_multivar_combine_LH # p-value is 0.001, indicating a significant difference 
+stats_multivar_combine_LH 
 ```
 
 #### "Combine Low" vs. "Combine Medium"
@@ -604,8 +604,7 @@ ps_unifrac_sub_combine_LM = as.matrix(ps_unifrac)[samples_to_keep_combine_LM, sa
 set.seed(421)
 stats_multivar_combine_LM = adonis2(ps_unifrac_sub_combine_LM ~ Tert_combine + Age + entacapone + Sex,
                                     data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LM))
-stats_multivar_combine_LM # p-value is 0.172 --> no significant difference
-```
+stats_multivar_combine_LM 
 
 #### "Combine Medium" vs. "Combine High"
 ```{r}
@@ -624,5 +623,5 @@ ps_unifrac_sub_combine_MH = as.matrix(ps_unifrac)[samples_to_keep_combine_MH, sa
 set.seed(421)
 stats_multivar_combine_MH = adonis2(ps_unifrac_sub_combine_MH ~ Tert_combine + Age + entacapone + Sex,
                                     data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_MH))
-stats_multivar_combine_MH # p-value is 0.003, indicating a significant difference
+stats_multivar_combine_MH 
 ```

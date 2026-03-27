@@ -34,15 +34,13 @@ To achieve this goal, we will first filter the metadata to include only PD patie
   - Figures
 
 #### Aim 2: Taxonomy Analysis
-- Indicator taxa analysis
+- Indicator species analysis
 
   - R script
  
   - [Summary of results](https://github.com/karriekk/micb-305-Team-5-/blob/main/Results/Summary_of_results/Aim_2/Indicator_species_analysis_results_summary.md)
 
-  - Tables
-
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_2/Indicator_species)
 
 - Differential abundance analysis
 

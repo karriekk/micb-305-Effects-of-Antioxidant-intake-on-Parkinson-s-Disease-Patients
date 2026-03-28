@@ -88,9 +88,9 @@ psrare_binary <- transform_sample_counts(psrare, function(x) ifelse(x > 0, 1, 0)
 as.data.frame(otu_table(psrare_binary)) # The bacterial strain is annotated as either 0 (absent) or 1 (present)
 
 # Calculate Jaccard distances
-jaccard_dis = distance(psrare_binary, method = "jaccard")
+jaccard_dis = phyloseq::distance(psrare_binary, method = "jaccard")
 
-# Take a peak
+# Take a peak at the results
 jaccard_dis[1:160]
 
 # MDS scaling
@@ -159,7 +159,8 @@ ps_jaccard_sub_BC_LH = as.matrix(jaccard_dis)[samples_to_keep_BC_LH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_BC_LH = adonis2(ps_jaccard_sub_BC_LH ~ Tert_BC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_LH)) # p-value is 0.004
+                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_LH)) 
+stats_multivar_BC_LH # p-value is 0.004
 
 ```
 
@@ -180,7 +181,8 @@ ps_jaccard_sub_BC_LM = as.matrix(jaccard_dis)[samples_to_keep_BC_LM, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_BC_LM = adonis2(ps_jaccard_sub_BC_LM ~ Tert_BC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_LM)) # p-value is 0.023
+                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_LM)) 
+stats_multivar_BC_LM # p-value is 0.023
 
 ```
 
@@ -188,7 +190,7 @@ stats_multivar_BC_LM = adonis2(ps_jaccard_sub_BC_LM ~ Tert_BC + Age + entacapone
 
 ```{r}
 # List samples that belong to the categories of interest (medium and high)
-to_compare_BC_MH = c("BC Medium", "BC High")
+to_compare_BC_MH = c("BC High", "BC Medium")
 
 # List samples that belong to these categories of interest 
 samples_to_keep_BC_MH = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_MH) %>%
@@ -201,10 +203,10 @@ ps_jaccard_sub_BC_MH = as.matrix(jaccard_dis)[samples_to_keep_BC_MH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_BC_MH = adonis2(ps_jaccard_sub_BC_MH ~ Tert_BC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_MH)) # p-value is 0.002
+                               data = parkinsons_metadata %>% filter(Tert_BC %in% to_compare_BC_MH)) 
+stats_multivar_BC_MH # p-value is 0.002
 
 ```
-
 
 ### Alpha carotene
 
@@ -240,15 +242,16 @@ stats_AC = bind_rows("Univariate" = stats_univar_AC %>% as.data.frame() %>%
 
 stats_AC = stats_AC %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+
 ```
 
 #### "AC Low" vs. "AC High"
 
 ```{r}
-# List samples that belong to the categories of interest
+# List samples that belong to the categories of interest (low and high)
 to_compare_AC_LH = c("AC Low", "AC High")
 
-# List samples that belong to these categories of interest (low and high)
+# List samples that belong to these categories of interest 
 samples_to_keep_AC_LH = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LH) %>%
   rownames()
 
@@ -259,7 +262,53 @@ ps_jaccard_sub_AC_LH = as.matrix(jaccard_dis)[samples_to_keep_AC_LH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_AC_LH = adonis2(ps_jaccard_sub_AC_LH ~ Tert_AC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LH)) #p-value is 0.042
+                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LH)) 
+stats_multivar_AC_LH #p-value is 0.042
+
+```
+
+#### "AC Low" vs. "AC Medium"
+
+```{r}
+# List samples that belong to the categories of interest (low and medium)
+to_compare_AC_LM = c("AC Low", "AC Medium")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_AC_LM = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LM) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_jaccard_sub_AC_LM = as.matrix(jaccard_dis)[samples_to_keep_AC_LM, samples_to_keep_AC_LM] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+set.seed(421)
+stats_multivar_AC_LM = adonis2(ps_jaccard_sub_AC_LM ~ Tert_AC + Age + entacapone + Sex,
+                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_LM)) 
+stats_multivar_AC_LM #p-value is 0.006
+
+```
+
+#### "AC Medium" vs. "AC High"
+
+```{r}
+# List samples that belong to the categories of interest (medium and high)
+to_compare_AC_MH = c("AC High", "AC Medium")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_AC_MH = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_MH) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_jaccard_sub_AC_MH = as.matrix(jaccard_dis)[samples_to_keep_AC_MH, samples_to_keep_AC_MH] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+set.seed(421)
+stats_multivar_AC_MH = adonis2(ps_jaccard_sub_AC_MH ~ Tert_AC + Age + entacapone + Sex,
+                               data = parkinsons_metadata %>% filter(Tert_AC %in% to_compare_AC_MH)) 
+stats_multivar_AC_MH #p-value is 0.008
+
 ```
 
 ### Vitamin C
@@ -296,15 +345,16 @@ stats_VC = bind_rows("Univariate" = stats_univar_VC %>% as.data.frame() %>%
 
 stats_VC = stats_VC %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+
 ```
 
 #### "VC Low" vs. "VC High"
 
 ```{r}
-# List samples that belong to the categories of interest
+# List samples that belong to the categories of interest (low and high)
 to_compare_VC_LH = c("VC Low", "VC High")
 
-# List samples that belong to these categories of interest (low and high)
+# List samples that belong to these categories of interest 
 samples_to_keep_VC_LH = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH) %>%
   rownames()
 
@@ -315,7 +365,8 @@ ps_jaccard_sub_VC_LH = as.matrix(jaccard_dis)[samples_to_keep_VC_LH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_LH = adonis2(ps_jaccard_sub_VC_LH ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH)) # p-value is 0.003
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LH)) 
+stats_multivar_VC_LH # p-value is 0.003
 
 ```
 
@@ -336,14 +387,15 @@ ps_jaccard_sub_VC_LM = as.matrix(jaccard_dis)[samples_to_keep_VC_LM, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_LM = adonis2(ps_jaccard_sub_VC_LM ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LM)) # p-value is 0.066
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_LM)) 
+stats_multivar_VC_LM # p-value is 0.066
 
 ```
 
 #### "VC Medium" vs. "VC High"
 
 ```{r}
-# List samples that belong to the categories of interest (low and high)
+# List samples that belong to the categories of interest (medium and high)
 to_compare_VC_MH = c("VC High", "VC Medium")
 
 # List samples that belong to these categories of interest 
@@ -357,7 +409,8 @@ ps_jaccard_sub_VC_MH = as.matrix(jaccard_dis)[samples_to_keep_VC_MH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VC_MH = adonis2(ps_jaccard_sub_VC_MH ~ Tert_VC + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_MH)) # p-value is 0.001
+                               data = parkinsons_metadata %>% filter(Tert_VC %in% to_compare_VC_MH))
+stats_multivar_VC_MH # p-value is 0.001
 
 ```
 
@@ -395,15 +448,16 @@ stats_VA = bind_rows("Univariate" = stats_univar_VA %>% as.data.frame() %>%
 
 stats_VA = stats_VA %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+
 ```
 
-#### "VA Low vs. "VA High"
+#### "VA Low" vs. "VA High"
 
 ```{r}
-# List samples that belong to the categories of interest
+# List samples that belong to the categories of interest (low and high)
 to_compare_VA_LH = c("VA Low", "VA High")
 
-# List samples that belong to these categories of interest (low and high)
+# List samples that belong to these categories of interest 
 samples_to_keep_VA_LH = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH) %>%
   rownames()
 
@@ -414,7 +468,52 @@ ps_jaccard_sub_VA_LH = as.matrix(jaccard_dis)[samples_to_keep_VA_LH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VA_LH = adonis2(ps_jaccard_sub_VA_LH ~ Tert_VA + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH)) # p-value is 0.039
+                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LH))
+stats_multivar_VA_LH # p-value is 0.039
+
+```
+
+#### "VA Low" vs. "VA Medium"
+
+```{r}
+# List samples that belong to the categories of interest (low and medium)
+to_compare_VA_LM = c("VA Low", "VA Medium")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_VA_LM = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LM) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_jaccard_sub_VA_LM = as.matrix(jaccard_dis)[samples_to_keep_VA_LM, samples_to_keep_VA_LM] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+set.seed(421)
+stats_multivar_VA_LM = adonis2(ps_jaccard_sub_VA_LM ~ Tert_VA + Age + entacapone + Sex,
+                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_LM))
+stats_multivar_VA_LM # p-value is 0.001
+
+```
+
+#### "VA Medium" vs. "VA High"
+
+```{r}
+# List samples that belong to the categories of interest (medium and high)
+to_compare_VA_MH = c("VA High", "VA Medium")
+
+# List samples that belong to these categories of interest 
+samples_to_keep_VA_MH = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_MH) %>%
+  rownames()
+
+# Subset the distance matrix to only include those two categories of interest
+ps_jaccard_sub_VA_MH = as.matrix(jaccard_dis)[samples_to_keep_VA_MH, samples_to_keep_VA_MH] %>%
+  as.dist()
+
+# Run a PERMANOVA test again and account for the real confounding variables
+set.seed(421)
+stats_multivar_VA_MH = adonis2(ps_jaccard_sub_VA_MH ~ Tert_VA + Age + entacapone + Sex,
+                               data = parkinsons_metadata %>% filter(Tert_VA %in% to_compare_VA_MH))
+stats_multivar_VA_MH # p-value is 0.038
 
 ```
 
@@ -452,6 +551,7 @@ stats_VE = bind_rows("Univariate" = stats_univar_VE %>% as.data.frame() %>%
 
 stats_VE = stats_VE %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+
 ```
 
 #### "VE Low" vs "VE High"
@@ -471,7 +571,8 @@ ps_jaccard_sub_VE_LH = as.matrix(jaccard_dis)[samples_to_keep_VE_LH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_LH = adonis2(ps_jaccard_sub_VE_LH ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LH)) # p-value is 0.001
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LH)) 
+stats_multivar_VE_LH # p-value is 0.001
 
 ```
 
@@ -492,14 +593,15 @@ ps_jaccard_sub_VE_LM = as.matrix(jaccard_dis)[samples_to_keep_VE_LM, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_LM = adonis2(ps_jaccard_sub_VE_LM ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LM)) # p-value is 0.002
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_LM))
+stats_multivar_VE_LM # p-value is 0.002
 
 ```
 
 #### "VE High" vs "VE Medium"
 
 ```{r}
-# List samples that belong to the categories of interest (low and medium)
+# List samples that belong to the categories of interest (medium and high)
 to_compare_VE_MH = c("VE High", "VE Medium")
 
 # List samples that belong to these categories of interest
@@ -513,7 +615,8 @@ ps_jaccard_sub_VE_MH = as.matrix(jaccard_dis)[samples_to_keep_VE_MH, samples_to_
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_VE_MH = adonis2(ps_jaccard_sub_VE_MH ~ Tert_VE + Age + entacapone + Sex,
-                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_MH)) # p-value is 0.01
+                               data = parkinsons_metadata %>% filter(Tert_VE %in% to_compare_VE_MH)) 
+stats_multivar_VE_MH # p-value is 0.01
 
 ```
 
@@ -551,6 +654,7 @@ stats_combine = bind_rows("Univariate" = stats_univar_combine %>% as.data.frame(
 
 stats_combine = stats_combine %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
+
 ```
 
 #### "Combine Low" vs. "Combine High"
@@ -570,7 +674,8 @@ ps_jaccard_sub_combine_LH = as.matrix(jaccard_dis)[samples_to_keep_combine_LH, s
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_combine_LH = adonis2(ps_jaccard_sub_combine_LH ~ Tert_combine + Age + entacapone + Sex,
-                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH)) # p-value is 0.007 
+                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LH))
+stats_multivar_combine_LH # p-value is 0.007 
 ```
 
 #### "Combine Low" vs. "Combine Medium"
@@ -590,7 +695,8 @@ ps_jaccard_sub_combine_LM = as.matrix(jaccard_dis)[samples_to_keep_combine_LM, s
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_combine_LM = adonis2(ps_jaccard_sub_combine_LM ~ Tert_combine + Age + entacapone + Sex,
-                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LM)) # p-value is 0.007 
+                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_LM))
+stats_multivar_combine_LM # p-value is 0.007 
 ```
 
 #### "Combine Medium" vs. "Combine High"
@@ -610,5 +716,6 @@ ps_jaccard_sub_combine_MH = as.matrix(jaccard_dis)[samples_to_keep_combine_MH, s
 # Run a PERMANOVA test again and account for the real confounding variables
 set.seed(421)
 stats_multivar_combine_MH = adonis2(ps_jaccard_sub_combine_MH ~ Tert_combine + Age + entacapone + Sex,
-                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_MH)) # p-value is 0.002
+                                    data = parkinsons_metadata %>% filter(Tert_combine %in% to_compare_combine_MH))
+stats_multivar_combine_MH # p-value is 0.002
 ```

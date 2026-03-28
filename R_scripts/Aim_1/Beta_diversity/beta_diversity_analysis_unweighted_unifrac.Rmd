@@ -86,7 +86,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 
 ## Calculate Unweighted UniFrac Distances
 
-```{r calculate Weighted UniFrac Distances}
+```{r calculate Unweighted UniFrac Distances}
 ps_unweighted_unifrac = phyloseq::distance(psrare, method = "unifrac")
 
 # View(as.matrix(ps_weighted_unifrac)) # Every pairwise comparison included

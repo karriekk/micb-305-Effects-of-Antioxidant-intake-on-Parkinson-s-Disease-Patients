@@ -11,22 +11,22 @@
 ### Alpha diversity of Beta Carotene intake
 <img width="1438" height="900" alt="Screenshot 2026-03-28 at 11 31 16" src="https://github.com/user-attachments/assets/ac59ea55-efc6-45ff-804d-fb86d04b4e9b" />
 
-- Observed:
+- #### Observed:
    - BC low vs. BC high: p-value = 7.023892e-01; padj = 8.104491e-01
    - BC medium vs. BC high: p-value = 6.866476e-01; padj = 8.104491e-01
    - BC low vs. BC medium: p-value = 2.365073e-01; padj = 4.434512e-01
 
-- Chao1:
+- #### Chao1:
    - BC low vs. BC high: p-value = 5.667898e-01; padj = 7.728951e-01
    - BC medium vs. BC high: p-value = 7.959221e-01; padj = 9.096956e-01
    - BC low vs. BC medium: p-value = 2.215394e-01; padj = 4.153864e-01
 
-- Shannon:
+- #### Shannon:
    - BC low vs. BC high: p-value = 2.017657e-01; padj = 3.783107e-01
    - BC medium vs. BC high: p-value = 8.973770e-02; padj = 1.922951e-01
    - BC low vs. BC medium: p-value = 4.825191e-01; padj = 5.615900e-01
 
-- Simpson:
+- #### Simpson:
    - BC low vs. BC high: p-value = 1.570182e-01; padj = 3.364676e-01
    - BC medium vs. BC high: p-value = 4.099289e-02; padj = 1.537233e-01
    - BC low vs. BC medium: p-value = 5.254706e-01; padj = 6.786011e-01

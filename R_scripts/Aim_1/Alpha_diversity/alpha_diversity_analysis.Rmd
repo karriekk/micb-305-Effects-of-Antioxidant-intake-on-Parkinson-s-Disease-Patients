@@ -116,7 +116,7 @@ stats_BC = pdata_BC %>% group_by(variable) %>% # running each metric concurrentl
     for (i in comparisons_BC) {
       temp = .x %>% filter(Tert_BC %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_BC + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_BC + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],
@@ -188,7 +188,7 @@ stats_AC = pdata_AC %>% group_by(variable) %>% # running each metric concurrentl
     for (i in comparisons_AC) {
       temp = .x %>% filter(Tert_AC %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_AC + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_AC + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],
@@ -260,7 +260,7 @@ stats_VC = pdata_VC %>% group_by(variable) %>% # running each metric concurrentl
     for (i in comparisons_VC) {
       temp = .x %>% filter(Tert_VC %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_VC + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_VC + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],
@@ -332,7 +332,7 @@ stats_VA = pdata_VA %>% group_by(variable) %>% # running each metric concurrentl
     for (i in comparisons_VA) {
       temp = .x %>% filter(Tert_VA %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_VA + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_VA + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],
@@ -404,7 +404,7 @@ stats_VE = pdata_VE %>% group_by(variable) %>% # running each metric concurrentl
     for (i in comparisons_VE) {
       temp = .x %>% filter(Tert_VE %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_VE + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_VE + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],
@@ -476,7 +476,7 @@ stats_combine = pdata_combine %>% group_by(variable) %>% # running each metric c
     for (i in comparisons_combine) {
       temp = .x %>% filter(Tert_combine %in% i) 
       
-      linear_regression = lm(formula = value ~ Tert_combine + Age + Sex + Energy_kcal + entacapone,
+      linear_regression = lm(formula = value ~ Tert_combine + Age + Sex + entacapone,
                              data = temp, conf.int = T) %>% 
         broom::tidy() %>% 
         mutate(group1 = i[1], group2 = i[2],

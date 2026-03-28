@@ -11,20 +11,20 @@
 ### Alpha diversity of Beta Carotene intake
 <img width="1438" height="900" alt="Screenshot 2026-03-28 at 11 31 16" src="https://github.com/user-attachments/assets/ac59ea55-efc6-45ff-804d-fb86d04b4e9b" />
      
-  2. Alpha diversity of vitamin A intake
-     <img width="1186" height="696" alt="Screenshot 2026-03-26 at 9 41 53" src="https://github.com/user-attachments/assets/083bf015-08dc-4959-b090-54d4cd5b2fb4" />
+### Alpha diversity of Alpha Carotene intake
+<img width="1440" height="900" alt="Screenshot 2026-03-28 at 11 34 03" src="https://github.com/user-attachments/assets/884e8a58-edc3-4047-b033-3d16c022d5bb" />
 
-  3. Alpha diversity of vitamin E intake
-<img width="1182" height="707" alt="Screenshot 2026-03-26 at 9 42 13" src="https://github.com/user-attachments/assets/ed3534cd-872f-477f-9929-b77d94e906e9" />
+### Alpha diversity of Vitamin C intake
 
-  4. Alpha diversity of Alpha Carotene intake
-     <img width="1181" height="660" alt="Screenshot 2026-03-26 at 9 54 21" src="https://github.com/user-attachments/assets/80fe205b-0b20-4fbd-b78f-bf7dad1272c2" />
 
-  5. Alpha diversity of Beta Carotene intake
-<img width="1181" height="675" alt="Screenshot 2026-03-26 at 9 54 45" src="https://github.com/user-attachments/assets/72b091e0-2106-47ec-b5f4-d9b32472cba1" />
+### Alpha diversity of Vitamin A intake
 
-### Section 3: alpha diversity analysis on combined dietary antioxidant intake
-<img width="1177" height="655" alt="Screenshot 2026-03-26 at 9 42 34" src="https://github.com/user-attachments/assets/5fbea9cb-ae1f-4ccf-ac38-7fde3d13ffb7" />
+
+### Alpha diversity of Vitamin E intake
+
+
+### Alpha diversity analysis on combined dietary antioxidant intake
+
 
 
 

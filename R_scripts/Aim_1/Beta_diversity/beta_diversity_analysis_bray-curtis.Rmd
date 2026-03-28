@@ -1,5 +1,5 @@
 ---
-title: "Beta Diversity Analysis (Bray-Curtis)"
+title: "Beta Diversity Analysis using Bray-Curtis"
 author: Yanting Xiong
 output: html_document
 date: "2026-03-15"
@@ -103,7 +103,7 @@ p_BC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Beta Carotene Intake Categorization", title = "Beta Diversity Analysis on Varying Levels of Beta Carotene Intake") +
+  labs(color = "Beta Carotene Intake Categorization") +
   scale_color_manual(
     values = c("BC Low" = "goldenrod2", "BC Medium" = "steelblue", "BC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -119,7 +119,7 @@ stats_univar_BC = adonis2(ps_bray ~ Tert_BC, data = parkinsons_metadata)
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_BC = adonis2(ps_bray ~ Tert_BC + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_BC = adonis2(ps_bray ~ Tert_BC + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_BC = bind_rows("Univariate" = stats_univar_BC %>% as.data.frame() %>% 
@@ -130,10 +130,11 @@ stats_BC = bind_rows("Univariate" = stats_univar_BC %>% as.data.frame() %>%
 
 stats_BC = stats_BC %>% rename(Pval = `Pr(>F)`) %>% 
   filter(!is.na(Pval)) # remove irrelevant lines
-# Based on the table, age (p = 0.035), sex (p = 0.066), and entacapone use (p = 0.010) were identified as variables associated with variation in the gut microbiome and were therefore included as covariates in subsequent statistical analyses.
+
 ```
 
 #### "BC Low" vs. "BC High"
+
 ```{r}
 # List samples that belong to the categories of interest (low and high)
 to_compare_BC_LH = c("BC Low", "BC High")
@@ -154,6 +155,7 @@ stats_multivar_BC_LH = adonis2(ps_bray_sub_BC_LH ~ Tert_BC + Age + entacapone + 
 ```
 
 #### "BC Low" vs. "BC Medium"
+
 ```{r}
 # List samples that belong to the categories of interest (low and medium)
 to_compare_BC_LM = c("BC Low", "BC Medium")
@@ -174,6 +176,7 @@ stats_multivar_BC_LM = adonis2(ps_bray_sub_BC_LM ~ Tert_BC + Age + entacapone + 
 ```
 
 #### "BC Medium" vs. "BC High"
+
 ```{r}
 # List samples that belong to the categories of interest (medium and high)
 to_compare_BC_MH = c("BC Medium", "BC High")
@@ -203,7 +206,7 @@ p_AC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Alpha Carotene Intake Categorization", title = "Beta Diversity Analysis on Varying Levels of Alpha Carotene Intake") +
+  labs(color = "Alpha Carotene Intake Categorization") +
   scale_color_manual(
     values = c("AC Low" = "goldenrod2", "AC Medium" = "steelblue", "AC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -217,7 +220,7 @@ stats_univar_AC = adonis2(ps_bray ~ Tert_AC, data = parkinsons_metadata)
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_AC = adonis2(ps_bray ~ Tert_AC + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_AC = adonis2(ps_bray ~ Tert_AC + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_AC = bind_rows("Univariate" = stats_univar_AC %>% as.data.frame() %>% 
@@ -259,7 +262,7 @@ p_VC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Vitamin C Intake Categorization", title = "Beta Diversity Analysis on Varying Levels of Vitamin C Intake") +
+  labs(color = "Vitamin C Intake Categorization") +
   scale_color_manual(
     values = c("VC Low" = "goldenrod2", "VC Medium" = "steelblue", "VC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -273,7 +276,7 @@ stats_univar_VC = adonis2(ps_bray ~ Tert_VC, data = parkinsons_metadata)
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_VC = adonis2(ps_bray ~ Tert_VC + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_VC = adonis2(ps_bray ~ Tert_VC + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_VC = bind_rows("Univariate" = stats_univar_VC %>% as.data.frame() %>% 
@@ -287,6 +290,7 @@ stats_VC = stats_VC %>% rename(Pval = `Pr(>F)`) %>%
 ```
 
 #### "VC Low" vs. "VC High"
+
 ```{r}
 # List samples that belong to the categories of interest
 to_compare_VC_LH = c("VC Low", "VC High")
@@ -307,6 +311,7 @@ stats_multivar_VC_LH = adonis2(ps_bray_sub_VC_LH ~ Tert_VC + Age + entacapone + 
 ```
 
 #### "VC Low" vs. "VC Medium"
+
 ```{r}
 # List samples that belong to the categories of interest (low and medium)
 to_compare_VC_LM = c("VC Low", "VC Medium")
@@ -327,6 +332,7 @@ stats_multivar_VC_LM = adonis2(ps_bray_sub_VC_LM ~ Tert_VC + Age + entacapone + 
 ```
 
 #### "VC Medium" vs. "VC High"
+
 ```{r}
 # List samples that belong to the categories of interest (low and high)
 to_compare_VC_MH = c("VC High", "VC Medium")
@@ -355,7 +361,7 @@ p_VA = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Vitamin A Intake Categorization", title = "Beta Diversity Analysis on Varying Levels of Vitamin A Intake") +
+  labs(color = "Vitamin A Intake Categorization") +
   scale_color_manual(
     values = c("VA Low" = "goldenrod2", "VA Medium" = "steelblue", "VA High" = "indianred3", title = "Beta Diversity Analysis on Varying Levels of Vitamin A Intake"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -369,7 +375,7 @@ stats_univar_VA = adonis2(ps_bray ~ Tert_VA, data = parkinsons_metadata)
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_VA = adonis2(ps_bray ~ Tert_VA + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_VA = adonis2(ps_bray ~ Tert_VA + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_VA = bind_rows("Univariate" = stats_univar_VA %>% as.data.frame() %>% 
@@ -383,6 +389,7 @@ stats_VA = stats_VA %>% rename(Pval = `Pr(>F)`) %>%
 ```
 
 #### "VA Low vs. "VA High"
+
 ```{r}
 # List samples that belong to the categories of interest
 to_compare_VA_LH = c("VA Low", "VA High")
@@ -411,7 +418,7 @@ p_VE = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Vitamin E Intake Categorization", title = "Beta Diversity Analysis on Varying Levels of Vitamin E Intake") +
+  labs(color = "Vitamin E Intake Categorization") +
   scale_color_manual(
     values = c("VE Low" = "goldenrod2", "VE Medium" = "steelblue", "VE High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -425,7 +432,7 @@ stats_univar_VE = adonis2(ps_bray ~ Tert_VE, data = parkinsons_metadata)
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_VE = adonis2(ps_bray ~ Tert_VE + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_VE = adonis2(ps_bray ~ Tert_VE + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_VE = bind_rows("Univariate" = stats_univar_VE %>% as.data.frame() %>% 
@@ -439,6 +446,7 @@ stats_VE = stats_VE %>% rename(Pval = `Pr(>F)`) %>%
 ```
 
 #### "VE Low" vs "VE High"
+
 ```{r}
 # List samples that belong to the categories of interest (low and high)
 to_compare_VE_LH = c("VE Low", "VE High")
@@ -459,6 +467,7 @@ stats_multivar_VE_LH = adonis2(ps_bray_sub_VE_LH ~ Tert_VE + Age + entacapone + 
 ```
 
 #### "VE Low" vs "VE Medium"
+
 ```{r}
 # List samples that belong to the categories of interest (low and medium)
 to_compare_VE_LM = c("VE Low", "VE Medium")
@@ -479,6 +488,7 @@ stats_multivar_VE_LM = adonis2(ps_bray_sub_VE_LM ~ Tert_VE + Age + entacapone + 
 ```
 
 #### "VE High" vs "VE Medium"
+
 ```{r}
 # List samples that belong to the categories of interest (low and medium)
 to_compare_VE_MH = c("VE High", "VE Medium")
@@ -507,7 +517,7 @@ p_combine = mds_data %>%
   geom_point() +
   stat_ellipse() + 
   theme_classic(base_size = 18) +
-  labs(color = "Categorization of Combined Dietary Antioxidant Intake", title = "Beta Diversity Analysis on Combined Dietary Antioxidant Intake") +
+  labs(color = "Categorization of Combined Dietary Antioxidant Intake") +
    scale_color_manual(
     values = c("Combine Low" = "goldenrod2", "Combine Medium" = "steelblue", "Combine High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -521,7 +531,7 @@ stats_univar_combine = adonis2(ps_bray ~ Tert_combine, data = parkinsons_metadat
 
 # Factor in confounding variables
 set.seed(421)
-stats_multivar_combine = adonis2(ps_bray ~ Tert_combine + Age + Sex + Energy_kcal + entacapone, data = parkinsons_metadata, by = "margin")
+stats_multivar_combine = adonis2(ps_bray ~ Tert_combine + Age + Sex + entacapone, data = parkinsons_metadata, by = "margin")
 
 # Combine into a table
 stats_combine = bind_rows("Univariate" = stats_univar_combine %>% as.data.frame() %>% 
@@ -535,6 +545,7 @@ stats_combine = stats_combine %>% rename(Pval = `Pr(>F)`) %>%
 ```
 
 #### "Combine Low" vs. "Combine High"
+
 ```{r}
 # List samples that belong to the categories of interest (low and high)
 to_compare_combine_LH = c("Combine Low", "Combine High")
@@ -555,6 +566,7 @@ stats_multivar_combine_LH # p-value is 0.001, indicating a significant differenc
 ```
 
 #### "Combine Low" vs. "Combine Medium"
+
 ```{r}
 # List samples that belong to the categories of interest (low and medium)
 to_compare_combine_LM = c("Combine Low", "Combine Medium")
@@ -575,6 +587,7 @@ stats_multivar_combine_LM # p-value is 0.172 --> no significant difference
 ```
 
 #### "Combine Medium" vs. "Combine High"
+
 ```{r}
 # List samples that belong to the categories of interest (medium and high)
 to_compare_combine_MH = c("Combine Medium", "Combine High")

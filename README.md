@@ -26,13 +26,13 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 
   - R script
 
-    - Bray-Curtis
+    - [Bray-Curtis](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_bray-curtis.Rmd)
    
-    - Weighted UniFrac
+    - [Weighted UniFrac](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_weighted_unifrac.Rmd)
    
-    - Unweighted UniFrac
+    - [Unweighted UniFrac](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_unweighted_unifrac.Rmd)
    
-    - Jaccard
+    - [Jaccard](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_jaccard.Rmd)
  
   - Summary of results
  

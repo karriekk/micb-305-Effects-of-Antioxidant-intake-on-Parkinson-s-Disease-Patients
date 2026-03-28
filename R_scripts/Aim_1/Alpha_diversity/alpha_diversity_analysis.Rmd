@@ -18,17 +18,17 @@ library(broom)
 
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
-parkinsons_metadata_filt_cat = read.csv('../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
+parkinsons_metadata_filt_cat = read.csv('../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
 
 # Because we will be controlling for entacapone in downstream analyses and it contains NA values, they need to be removed from the filtered metadata
 parkinsons_metadata_filt_cat_entacapone_NA_removed = parkinsons_metadata_filt_cat %>% filter(!is.na(entacapone))
 # 10 PD individuals are removed after this filtering step because they do not have entacapone intakes recorded
 
 # Load in feature table exported from QIIME2
-counts = read.delim('../../QIIME2_outputs/feature-table.txt', skip = 1, row.names = 1)
+counts = read.delim('../../../QIIME2_outputs/feature-table.txt', skip = 1, row.names = 1)
 
 # Load in taxonomy table exported from QIIME2
-taxonomy = read.delim('../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
+taxonomy = read.delim('../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object

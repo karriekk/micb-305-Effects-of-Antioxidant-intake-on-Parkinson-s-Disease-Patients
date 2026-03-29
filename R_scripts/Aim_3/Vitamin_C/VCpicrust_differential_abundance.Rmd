@@ -266,11 +266,88 @@ pheatmap(stats,
          height = 6)
 
 ```
-See how similar your sample groups are
 
+See how similar your sample groups are
 ```{r PCA}
 # Generate pathway PCA plot
-pathway_pca(abundance = path_filt,
+pca_plot = pathway_pca(abundance = path_filt,
             metadata = metadata_sub, 
             group = "Tert_VC")
+
+pca_plot = pca_plot + 
+  theme_minimal() +
+  labs(
+    color = "Tert_VC"
+  )
+ggsave("../../../Results/Figures/Aim_3/VC-pathway-pca.png", 
+       plot = pca_plot, 
+       width = 8, 
+       height = 6, 
+       dpi = 300)
 ```
+
+Volcano
+```{r}
+# 1. Join the p-values from Maaslin2 with the log2FC you calculated
+plot_data <- daa_annotated_results_df %>%
+  left_join(ratio, by = c("feature" = "pathway")) %>%
+  mutate(
+    # Define significance categories for coloring
+    status = case_when(
+      p_adjust < 0.05 & log2fc >= 1 ~ "Up-regulated (VC Low)",
+      p_adjust < 0.05 & log2fc <= -1 ~ "Down-regulated (VC High)",
+      TRUE ~ "Not Significant"
+    )
+  )
+
+# 2. Create the Volcano Plot
+volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = status)) +
+  geom_point(alpha = 0.6, size = 2) +
+  # Add threshold lines
+  geom_vline(xintercept = c(-1, 1), linetype = "dashed", color = "grey50") +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey50") +
+  # Custom colors
+  scale_color_manual(values = c("Up-regulated (VC Low)" = "#D55E00", 
+                                "Down-regulated (VC High)" = "#0072B2", 
+                                "Not Significant" = "grey70")) +
+  # Optional: Label the top significant pathways
+  geom_text_repel(
+    data = subset(plot_data, p_adjust < 0.01 & abs(log2fc) > 1.5),
+    aes(label = description), # Using the description from the annotation
+    size = 3,
+    max.overlaps = 10,
+    show.legend = FALSE
+  ) +
+  theme_minimal() +
+  labs(
+    x = expression(log[2]~"Fold Change"),
+    y = expression(-log[10]~"Adjusted P-value"),
+    color = "Significance"
+  ) +
+  theme(legend.position = "bottom")
+
+volcano_plot <- volcano_plot +
+  theme(
+    # Increase general text size (base_size)
+    text = element_text(size = 16), 
+    
+    # Specifically target axis titles (the labels on the X and Y axes)
+    axis.title = element_text(size = 18, face = "bold"),
+    
+    # Specifically target axis numbers (the tick labels)
+    axis.text = element_text(size = 14),
+    
+    # Increase legend text and title
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16, face = "bold")
+  )
+
+# Show the plot
+print(volcano_plot)
+
+# 3. Save the plot
+ggsave("../../../Results/Figures/Aim_3/VC-volcano-plot.png", 
+       plot = volcano_plot, width = 10, height = 8, dpi = 300)
+```
+
+

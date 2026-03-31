@@ -69,6 +69,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 You can access all of our weekly meeting agendas [here](https://github.com/karriekk/micb-305-Team-5-/tree/main/meeting_agenda), or click the hyperlinks below to open a specific agenda.
 
 #### April
+- [Apr 2](https://github.com/karriekk/micb-305-Team-5-/blob/main/meeting_agenda/Apr%202%20Agenda.md)
 
 #### March
 - [Mar 26](https://github.com/karriekk/micb-305-Team-5-/blob/main/meeting_agenda/Mar%2026%20Agenda.md)

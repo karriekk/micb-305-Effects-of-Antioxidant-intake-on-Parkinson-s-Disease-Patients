@@ -316,6 +316,8 @@ ggsave("../../../Results/Figures/Aim_3/VC-pathway-pca.png",
 
 Volcano
 ```{r}
+library(ggrepel)
+library(stringr)
 # 1. Join the p-values from Maaslin2 with the log2FC you calculated
 plot_data <- daa_annotated_results_df %>%
   left_join(ratio, by = c("feature" = "pathway")) %>%
@@ -340,7 +342,7 @@ volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = 
                                 "Not Significant" = "grey70")) +
   # Optional: Label the top significant pathways
   geom_text_repel(
-    data = subset(plot_data, p_adjust < 0.01 & abs(log2fc) > 1.5),
+    data = subset(plot_data, p_adjust < 0.05 & abs(log2fc) > 1),
     aes(label = description), # Using the description from the annotation
     size = 3,
     max.overlaps = 10,

@@ -1,5 +1,5 @@
 ## Questions about the Oral Presentation
-- Presentation slides (draft):
+- Presentation slides (draft): https://canva.link/5u15qxlcbttmusj
 - Do we need to include all the results we have obtained so far or would it be better to just include the ones that are more related to the project?
   - For instance, for the indicator species analysis, do we need to include bacterial taxa with a stat value < 0.7?
 

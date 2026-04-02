@@ -3,6 +3,7 @@
 - Do we need to include all the results we have obtained so far or would it be better to just include the ones that are more related to the project?
   - For instance, for the indicator species analysis, do we need to include bacterial taxa with a stat value < 0.7?
  - We are unsure about the appropriate level of detail to include for each figure and analysis in the presentation.
+ - Overall format of the slides (amount of text, color, overall impression, etc.)
 
 ## Question about the Plots
 - If no significant difference was observed for alpha-diversity, do we still need to label the p-values on the plots?

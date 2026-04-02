@@ -112,7 +112,7 @@ p_BC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Beta Carotene Intake Categorization") +
+  labs(color = "Beta-carotene Intake Categorization") +
   scale_color_manual(
     values = c("BC Low" = "steelblue", "BC Medium" = "goldenrod2", "BC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")
@@ -692,6 +692,7 @@ stats_multivar_combine_LM = adonis2(ps_unweighted_unifrac_sub_combine_LM ~ Tert_
 stats_multivar_combine_LM # p-value is 0.13
 
 ```
+
 #### "Combine Medium" vs. "Combine High"
 
 ```{r}

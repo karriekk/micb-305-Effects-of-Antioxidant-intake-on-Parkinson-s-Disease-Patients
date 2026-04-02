@@ -209,7 +209,7 @@ p_AC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Alpha Carotene Intake Categorization") +
+  labs(color = "Alpha-carotene Intake Categorization") +
   scale_color_manual(
     values = c("AC Low" = "steelblue", "AC Medium" = "goldenrod2", "AC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")

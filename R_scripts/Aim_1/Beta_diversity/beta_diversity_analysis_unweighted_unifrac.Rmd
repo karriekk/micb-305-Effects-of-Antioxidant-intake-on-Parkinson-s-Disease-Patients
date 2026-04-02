@@ -185,6 +185,7 @@ stats_multivar_BC_LM = adonis2(ps_unweighted_unifrac_sub_BC_LM ~ Tert_BC + Age +
 stats_multivar_BC_LM # p-value is 0.397
 
 ```
+
 #### "BC Medium" vs. "BC High"
 
 ```{r}
@@ -217,7 +218,7 @@ p_AC = mds_data %>%
   geom_point() +
   stat_ellipse() +
   theme_classic(base_size = 18) +
-  labs(color = "Alpha Carotene Intake Categorization") +
+  labs(color = "Alpha-carotene Intake Categorization") +
   scale_color_manual(
     values = c("AC Low" = "steelblue", "AC Medium" = "goldenrod2", "AC High" = "indianred3"),
     labels = c("Low intake", "Medium intake", "High intake")

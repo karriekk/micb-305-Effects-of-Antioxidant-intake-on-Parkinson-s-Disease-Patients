@@ -5,8 +5,9 @@
  - We are unsure about the appropriate level of detail to include for each figure and analysis in the presentation.
  - Overall format and layout of the slides (amount of text, color, overall impression, etc.)
 
-## Question about the Plots
+## Questions about the Plots
 - If no significant difference was observed for alpha-diversity, do we still need to label the p-values on the plots?
+- What's the best way to label p-values on beta-diversity plots?
 
 ## Questions about Data Analysis
 - Re-ran the differential abundance analysis using Maaslin2 but still did not find any significant results - just wanted to double-check this again to ensure that I am doing everything correctly; results will be put on the presentation slides after confirmation

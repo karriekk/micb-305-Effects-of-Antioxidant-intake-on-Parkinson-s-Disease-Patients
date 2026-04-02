@@ -176,7 +176,7 @@ BC_low_Esch_plot = df_of_taxa_BC_low_Esch %>%
   labs(x = "Dietary Antioxidant Intake Tertile", y = "Log-10 Transformed Relative Abundance") +
   scale_x_discrete(labels = c("Low intake", "Medium intake", "High intake")) +
   scale_fill_manual(
-    name = "Beta Carotene Intake Categorization",
+    name = "Beta-carotene Intake Categorization",
     values = c("BC Low" = "steelblue",
                "BC Medium" = "goldenrod2",
                "BC High" = "indianred3"),

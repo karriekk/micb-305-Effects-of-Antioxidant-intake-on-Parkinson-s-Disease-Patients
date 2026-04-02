@@ -8,7 +8,7 @@
 - If no significant difference was observed for alpha-diversity, do we still need to label the p-values on the plots?
 
 ## Questions about Data Analysis
-- Re-ran the differential abundance analysis using Maaslin2 but still did not find any significant results - want to double-check this to ensure that I am doing everything correctly. - results will be put on the presentation slides after confirmation
+- Re-ran the differential abundance analysis using Maaslin2 but still did not find any significant results - just wanted to double-check this again to ensure that I am doing everything correctly; results will be put on the presentation slides after confirmation
 - Still not 100% sure how to run aim 4 analysis with the picrust differential abundance results
 
 

@@ -113,7 +113,7 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
 
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_4/Aim4_Indicator_Taxa(version_2_relative_abundance).Rmd)
  
-  - Figure
+  - [Figure](https://github.com/karriekk/micb-305-Team-5-/blob/main/Results/Figures/Aim_4/Indicator_taxon/Association%20Between%20Log-10%20Transformed%20Relative%20Abundance%20of%20Escherichia-Shigella%20and%20MoCA%20Score%20in%20PD%20Patients.png)
 
 ## Weekly Meeting Agenda
 You can access all of our weekly meeting agendas [here](https://github.com/karriekk/micb-305-Team-5-/tree/main/meeting_agenda), or click the hyperlinks below to open a specific agenda.

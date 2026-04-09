@@ -115,6 +115,9 @@ statistical_table_BC$Genus = genus_map[statistical_table_BC$feature]
 
 statistical_table_BC = statistical_table_BC %>% relocate(Genus, .after = feature)
 
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_BC = statistical_table_BC %>% mutate(feature = substring(feature, 2))
+
 writexl::write_xlsx(statistical_table_BC,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Beta_carotene - Maaslin2 Results.xlsx')
 
 # Filter stats to only include taxa that are differentially abundant between the low and high intake groups
@@ -158,6 +161,9 @@ statistical_table_AC = out_AC$results
 statistical_table_AC$Genus = genus_map[statistical_table_AC$feature] 
 
 statistical_table_AC = statistical_table_AC %>% relocate(Genus, .after = feature)
+
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_AC = statistical_table_AC %>% mutate(feature = substring(feature, 2))
 
 writexl::write_xlsx(statistical_table_AC,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Alpha_carotene - Maaslin2 Results.xlsx')
 
@@ -203,6 +209,9 @@ statistical_table_VA$Genus = genus_map[statistical_table_VA$feature]
 
 statistical_table_VA = statistical_table_VA %>% relocate(Genus, .after = feature)
 
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_VA = statistical_table_VA %>% mutate(feature = substring(feature, 2))
+
 writexl::write_xlsx(statistical_table_VA,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Vitamin_A - Maaslin2 Results.xlsx')
 
 # Filter stats to only include taxa that are differentially abundant between the low and high intake groups
@@ -245,6 +254,9 @@ statistical_table_VC = out_VC$results
 statistical_table_VC$Genus = genus_map[statistical_table_VC$feature] 
 
 statistical_table_VC = statistical_table_VC %>% relocate(Genus, .after = feature)
+
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_VC = statistical_table_VC %>% mutate(feature = substring(feature, 2))
 
 writexl::write_xlsx(statistical_table_VC,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Vitamin_C - Maaslin2 Results.xlsx')
 
@@ -289,6 +301,9 @@ statistical_table_VE$Genus = genus_map[statistical_table_VE$feature]
 
 statistical_table_VE = statistical_table_VE %>% relocate(Genus, .after = feature)
 
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_VE = statistical_table_VE %>% mutate(feature = substring(feature, 2))
+
 writexl::write_xlsx(statistical_table_VE,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Vitamin_E - Maaslin2 Results.xlsx')
 
 # Filter stats to only include taxa that are differentially abundant between the low and high intake groups
@@ -331,6 +346,9 @@ statistical_table_combine = out_combine$results
 statistical_table_combine$Genus = genus_map[statistical_table_combine$feature] 
 
 statistical_table_combine = statistical_table_combine %>% relocate(Genus, .after = feature)
+
+# Remove the arbitrary X at the front of the feature ID
+statistical_table_combine = statistical_table_combine %>% mutate(feature = substring(feature, 2))
 
 writexl::write_xlsx(statistical_table_combine,'../../../Results/Tables/Aim_2/Differential_abundance_analysis/Combined - Maaslin2 Results.xlsx')
 

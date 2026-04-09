@@ -56,6 +56,14 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
  
   - Figures
 
+    - [Bray-Curtis]
+   
+    - [Weighted UniFrac]
+   
+    - [Unweighted UniFrac]
+   
+    - [Jaccard]
+
 #### Aim 2: Taxonomy Analysis
 - Indicator species analysis
 

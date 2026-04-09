@@ -11,7 +11,7 @@ Alterations in the gut microbiome of PD patients have been increasingly found in
 
 Diet plays a key role in shaping the microbiome, and healthy dietary patterns have been associated with beneficial microbial changes in PD patients. In particular, dietary antioxidants have been found to reduce gut inflammation and promote beneficial microbial activity. Thus, antioxidants are hypothesized to indirectly provide neuroprotection through microbiome modulation. 
 
-Despite growing research in the field, most studies focus on comparing between PD patients and healthy controls, with few examining microbiome variability within PD populations. Additionally, it remains unclear whether antioxidant-driven microbiome changes are correlated with shifts in cognitive performance in PD patients. Therefore, our study aims to address these knowledge gaps using the dataset by Cirstea et al.
+Despite growing research in the field, most studies focus on comparing between PD patients and healthy controls, with few examining microbiome variability within PD populations. Additionally, it remains unclear whether antioxidant-driven microbiome changes are correlated with shifts in cognitive performance in PD patients. Therefore, our study aims to address these knowledge gaps using the dataset from Cirstea et al.
 
 ## Research Question
 How is gut microbiota taxonomic and functional composition in Parkinson’s Disease patients affected by dietary antioxidant intake, and how are these microbial features correlated with cognitive performance change assessed by Montreal Cognitive Assessment (MoCA)?

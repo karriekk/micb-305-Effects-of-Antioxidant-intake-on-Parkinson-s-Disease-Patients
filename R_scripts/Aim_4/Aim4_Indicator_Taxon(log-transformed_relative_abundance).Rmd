@@ -10,10 +10,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load Library
+
 ```{r}
 library(tidyverse)
 library(phyloseq)
 ```
+
 # Load dataset
 
 ```{r Load datasets}
@@ -29,6 +31,7 @@ taxonomy = read.delim('../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 # Create a Phyloseq Object
+
 ```{r phyloseq_object}
 # Counts
 counts_formatted = counts %>% as.matrix()
@@ -36,8 +39,8 @@ counts_formatted = counts %>% as.matrix()
 # Taxonomy
 taxonomy_formatted = taxonomy %>% 
   separate(col = Taxon, 
-           into = c("Domain","Phylum","Class","Order",
-                    "Family","Genus","Species"),
+           into = c("Domain", "Phylum", "Class", "Order",
+                    "Family", "Genus", "Species"),
            sep = ";", fill = "right") %>% 
   select(-Confidence) %>% 
   as.matrix()
@@ -59,7 +62,7 @@ ps_genus = tax_glom(ps, "Genus")
 # Convert phyloseq to relative abundance
 ps_relab = transform_sample_counts(ps_genus, function(x) x / sum(x))
 
-#Extract the phyloseq abundance
+# Extract the phyloseq otu_table
 otu = as.data.frame(otu_table(ps_relab))
 
 # Make samples = rows
@@ -77,7 +80,7 @@ sub = data.frame(
   rel_abund = otu[, taxa_id]
 )
 
-# Raw relative abundance histogram -- right skewed, not good for LM.
+# Raw relative abundance histogram -- right skewed, not suitable for linear regression model
 hist(sub$rel_abund,
      breaks = 30,
      main = "Distribution of Relative Abundance",
@@ -86,7 +89,7 @@ hist(sub$rel_abund,
 
 # The lowest non-zero relative abundance is 0.0001518834
 
-# Log transform it
+# Log transform relative abundance
 sub$log_rel_abund <- log10(sub$rel_abund + 0.0001518834/2)
 
 hist(sub$log_rel_abund,
@@ -105,7 +108,7 @@ meta$SampleID <- rownames(meta)
 meta2 <- merge(meta, sub, by="SampleID")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Linear Regression Model
 
 ```{r Predict the MoCA based on the indicator taxa}
 
@@ -113,22 +116,28 @@ model <- lm(moca_total ~ log_rel_abund + Age + Sex + entacapone, data = meta2)
 
 summary(model)
 
+# For log10-transformed relative abundance, estimate = -0.03384; p = 0.8769
+
 # Age seems to be the predictor of MoCA score.
 
 ```
-
+# Linear Regression Plot
 
 ```{r Generate Plot for Aim 4}
 library(ggplot2)
 
-ggplot(meta2, aes(x = log_rel_abund, y = moca_total)) +
+linear_regression_plot = ggplot(meta2, aes(x = log_rel_abund, y = moca_total)) +
   geom_point(size = 3, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE) +
   labs(
     x = "Log-10 Transformed Relative Abundance of Escherichia-Shigella",
-    y = "MoCA Score"
+    y = "Cognitive Performance of PD Patients Assessed Using MoCA Score"
   ) +
   theme_classic(base_size = 8)
+linear_regression_plot
+
+# Export the plot
+ggsave("../../Results/Figures/Aim_4/Indicator_taxon/Association Between Log-10 Transformed Relative Abundance of Escherichia-Shigella and MoCA Score in PD Patients.png", plot = linear_regression_plot, width = 6, height = 4, dpi = 300)
 
 ```
 

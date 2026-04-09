@@ -1,4 +1,4 @@
-# MICB 305 (2025 Winter Term 2) Group Project on Parkinson's Dataset
+# MICB 305 (2025-26 Winter Term 2) Group Project on Parkinson's Dataset
 
 Team 5 members: Carrie Sun, Coe McGrath, Cynthia Lin, Emily Ju, Yanting Xiong
 

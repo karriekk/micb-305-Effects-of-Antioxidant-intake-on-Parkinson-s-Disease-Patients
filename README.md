@@ -76,37 +76,37 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Alpha-carotene)
  
 - Beta-carotene
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Beta-carotene)
  
 - Vitamin A
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_A)
  
 - Vitamin C
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_C)
  
 - Vitamin E
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_E)
  
 - Combined
   
   - R script
  
-  - Figures
+  - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Combined)
 
 #### Aim 4: Link Everything to Cognitive Performance (MoCA)
 - Indicator Taxon - Escherichia-Shigella

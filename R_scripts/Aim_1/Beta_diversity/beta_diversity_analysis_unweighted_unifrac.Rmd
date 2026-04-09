@@ -266,6 +266,7 @@ stats_multivar_AC_LH = adonis2(ps_unweighted_unifrac_sub_AC_LH ~ Tert_AC + Age +
 stats_multivar_AC_LH # p-value is 0.28
 
 ```
+
 #### "AC Low" vs. "AC Medium"
 
 ```{r}

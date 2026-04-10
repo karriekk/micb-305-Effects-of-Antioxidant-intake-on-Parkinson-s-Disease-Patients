@@ -24,7 +24,8 @@ parkinsons_metadata_filt_cat = read.csv("../Datasets/Metadata/parkinsons_metadat
 # Visualize the distribution of MoCA Score using Histogram
 ```{r MoCA_score_visualization}
 moca_histogram = ggplot(parkinsons_metadata_filt_cat, aes(x = moca_total)) +
-  geom_histogram(bins = 25, fill = "steelblue", color = "black")
+  geom_histogram(bins = 25, fill = "steelblue", color = "black") +
+  labs(x = "MoCA Score", y = "Number of PD Patients")
 moca_histogram
 
 ```

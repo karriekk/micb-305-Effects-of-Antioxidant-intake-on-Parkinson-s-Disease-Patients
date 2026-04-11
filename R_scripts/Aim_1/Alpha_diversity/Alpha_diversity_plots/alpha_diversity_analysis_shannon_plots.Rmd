@@ -12,6 +12,7 @@ library(ggplot2)
 library(dplyr)
 library(vegan)
 library(broom)
+library(ggpubr)
 ```
 
 ## Load the data

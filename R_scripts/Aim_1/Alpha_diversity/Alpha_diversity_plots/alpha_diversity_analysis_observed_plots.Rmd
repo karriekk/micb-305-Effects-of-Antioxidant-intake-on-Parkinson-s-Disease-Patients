@@ -12,6 +12,7 @@ library(ggplot2)
 library(dplyr)
 library(vegan)
 library(broom)
+library(ggpubr)
 ```
 
 ## Load the data
@@ -105,7 +106,7 @@ p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Beta-carotene Intake Tertile") + 
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -164,7 +165,7 @@ p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Alpha-carotene Intake Tertile") +
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -223,7 +224,7 @@ p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Vitamin C Intake Tertile") +
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -283,7 +284,7 @@ p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Vitamin A Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin A Intake Categorization") +
@@ -342,7 +343,7 @@ p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Vitamin E Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin E Intake Categorization") +
@@ -402,7 +403,7 @@ p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Observed Species Index") + 
+  ylab("Observed Features") + 
   xlab("Combined Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Combined Dietary Antioxidant Intake Categorization") +

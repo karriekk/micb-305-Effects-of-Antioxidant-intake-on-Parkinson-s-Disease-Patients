@@ -41,7 +41,7 @@
 
 - #### Chao1:
    - AC low vs. AC high: p-value = 9.320260e-01; padj = 9.320260e-01
-   - AC medium vs. AC high: p-value = 7.959221e-01; padj = 9.096956e-01
+   - AC medium vs. AC high: p-value = 9.296427e-01; padj = 9.320260e-01
    - AC low vs. AC medium: p-value = 8.417970e-01; padj = 9.320260e-01
 
 - #### Shannon:

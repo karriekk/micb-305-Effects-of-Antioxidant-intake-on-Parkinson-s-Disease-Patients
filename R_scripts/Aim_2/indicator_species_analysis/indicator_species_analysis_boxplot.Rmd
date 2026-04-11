@@ -175,7 +175,7 @@ BC_low_Esch_plot = df_of_taxa_BC_low_Esch %>%
   ggplot(aes(x = Tert_BC, y = log10(Abundance + 0.0001518834/2), fill = Tert_BC)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(height = 0, width = 0.2) +
-  labs(x = "Dietary Antioxidant Intake Tertile", y = "Log-10 Relative Abundance of Escherichia-Shigella") +
+  labs(x = "Beta-carotene Intake Tertile", y = "Log-10 Relative Abundance of Escherichia-Shigella") +
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   scale_x_discrete(labels = c("Low intake", "Medium intake", "High intake")) +
@@ -291,7 +291,7 @@ VC_low_Esch_plot = df_of_taxa_VC_low_Esch %>%
   ggplot(aes(x = Tert_VC, y = log10(Abundance + 0.0001518834/2), fill = Tert_VC)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(height = 0, width = 0.2) +
-  labs(x = "Dietary Antioxidant Intake Tertile", y = "Log-10 Relative Abundance of Escherichia-Shigella") +
+  labs(x = "Vitamin C Intake Tertile", y = "Log-10 Relative Abundance of Escherichia-Shigella") +
   scale_x_discrete(labels = c("Low intake", "Medium intake", "High intake")) +
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) + 

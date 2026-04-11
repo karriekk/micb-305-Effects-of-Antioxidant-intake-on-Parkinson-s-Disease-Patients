@@ -1,5 +1,5 @@
 ---
-title: "Alpha Diversity Analysis Presentation Plots"
+title: "Alpha Diversity Analysis Chao1 Plots"
 author: Yanting Xiong
 output: html_document
 ---
@@ -18,17 +18,17 @@ library(broom)
 
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
-parkinsons_metadata_filt_cat = read.csv('../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
+parkinsons_metadata_filt_cat = read.csv('../../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
 
 # Because we will be controlling for entacapone in downstream analyses and it contains NA values, they need to be removed from the filtered metadata
 parkinsons_metadata_filt_cat_entacapone_NA_removed = parkinsons_metadata_filt_cat %>% filter(!is.na(entacapone))
 # 10 PD individuals are removed after this filtering step because they do not have entacapone intakes recorded
 
 # Load in feature table exported from QIIME2
-counts = read.delim('../../../QIIME2_outputs/feature-table.txt', skip = 1, row.names = 1)
+counts = read.delim('../../../../QIIME2_outputs/feature-table.txt', skip = 1, row.names = 1)
 
 # Load in taxonomy table exported from QIIME2
-taxonomy = read.delim('../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
+taxonomy = read.delim('../../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object
@@ -71,7 +71,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 set.seed(421)
 
 p_BC = plot_richness(psrare, x = "Tert_BC",
-                     measures = c("Shannon"),
+                     measures = c("Chao1"),
                      color = "Tert_BC")
 p_BC
 
@@ -88,6 +88,14 @@ pdata_BC$Tert_BC = fct_relevel(
 
 str(pdata_BC) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_BC = data.frame(
+  group1 = c("BC Low", "BC Low", "BC Medium"),
+  group2 = c("BC High", "BC Medium", "BC High"),
+  p = c("0.77", "0.42", "0.91"),
+  y.position = c(250, 265, 280)
+)
+
 # Graph the plot again
 p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC, 
                                          value, 
@@ -95,9 +103,11 @@ p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Beta-carotene Intake Tertile") + 
+  theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Beta-carotene Intake Categorization") +
   scale_fill_manual(
@@ -107,9 +117,12 @@ p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC,
   scale_x_discrete(
     labels = c("BC Low" = "Low intake",
                "BC Medium" = "Medium intake",
-               "BC High" = "High intake"))
+               "BC High" = "High intake")) +
+  stat_pvalue_manual(stat.test_BC, label = "p")
 p_BC_formatted
 
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Beta-carotene.png", plot = p_BC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Alpha carotene
@@ -117,7 +130,7 @@ p_BC_formatted
 ```{r alpha_diversity_analysis_for_alpha_carotene}
 set.seed(421)
 p_AC = plot_richness(psrare, x = "Tert_AC",
-                     measures = c("Shannon"),
+                     measures = c("Chao1"),
                      color = "Tert_AC")
 p_AC
 
@@ -134,6 +147,14 @@ pdata_AC$Tert_AC = fct_relevel(
 
 str(pdata_AC) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_AC = data.frame(
+  group1 = c("AC Low", "AC Low", "AC Medium"),
+  group2 = c("AC High", "AC Medium", "AC High"),
+  p = c("0.93", "0.93", "0.93"),
+  y.position = c(250, 265, 280)
+)
+
 # Graph the plot again
 p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC, 
                                          value, 
@@ -141,9 +162,11 @@ p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Alpha-carotene Intake Tertile") +
+  theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Alpha-carotene Intake Categorization") +
   scale_fill_manual(
@@ -153,9 +176,12 @@ p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC,
   scale_x_discrete(
     labels = c("AC Low" = "Low intake",
                "AC Medium" = "Medium intake",
-               "AC High" = "High intake"))
+               "AC High" = "High intake")) + 
+  stat_pvalue_manual(stat.test_AC, label = "p")
 p_AC_formatted
 
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Alpha-carotene.png", plot = p_AC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin C
@@ -163,7 +189,7 @@ p_AC_formatted
 ```{r alpha_diversity_analysis_for_vitamin_c}
 set.seed(421)
 p_VC = plot_richness(psrare, x = "Tert_VC",
-                     measures = c("Shannon"),
+                     measures = c("Chao1"),
                      color = "Tert_VC")
 p_VC
 
@@ -180,6 +206,14 @@ pdata_VC$Tert_VC = fct_relevel(
 
 str(pdata_VC) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_VC = data.frame(
+  group1 = c("VC Low", "VC Low", "VC Medium"),
+  group2 = c("VC High", "VC Medium", "VC High"),
+  p = c("0.24", "0.85", "0.20"),
+  y.position = c(250, 265, 280)
+)
+
 # Graph the plot again
 p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC, 
                                          value, 
@@ -187,9 +221,11 @@ p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Vitamin C Intake Tertile") +
+  theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin C Intake Categorization") +
   scale_fill_manual(
@@ -199,9 +235,12 @@ p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC,
   scale_x_discrete(
     labels = c("VC Low" = "Low intake",
                "VC Medium" = "Medium intake",
-               "VC High" = "High intake"))
+               "VC High" = "High intake")) +
+  stat_pvalue_manual(stat.test_VC, label = "p")
 p_VC_formatted
 
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_C.png", plot = p_VC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin A
@@ -209,7 +248,7 @@ p_VC_formatted
 ```{r alpha_diversity_analysis_for_vitamin_a}
 set.seed(421)
 p_VA = plot_richness(psrare, x = "Tert_VA",
-                     measures = c("Shannon"),
+                     measures = c("Chao1"),
                      color = "Tert_VA")
 p_VA
 
@@ -226,6 +265,14 @@ pdata_VA$Tert_VA = fct_relevel(
 
 str(pdata_VA) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_VA = data.frame(
+  group1 = c("VA Low", "VA Low", "VA Medium"),
+  group2 = c("VA High", "VA Medium", "VA High"),
+  p = c("0.57", "0.48", "0.77"),
+  y.position = c(300, 320, 340)
+)
+
 # Graph the plot again
 p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA, 
                                          value, 
@@ -233,9 +280,11 @@ p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
+  theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Vitamin A Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin A Intake Categorization") +
   scale_fill_manual(
@@ -245,9 +294,12 @@ p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA,
   scale_x_discrete(
     labels = c("VA Low" = "Low intake",
                "VA Medium" = "Medium intake",
-               "VA High" = "High intake"))
+               "VA High" = "High intake")) +
+  stat_pvalue_manual(stat.test_VA, label = "p")
 p_VA_formatted
 
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_A.png", plot = p_VA_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin E
@@ -255,7 +307,7 @@ p_VA_formatted
 ```{r alpha_diversity_analysis_for_vitamin_e}
 set.seed(421)
 p_VE = plot_richness(psrare, x = "Tert_VE",
-                     measures = c("Shannon"),
+                     measures = c("Chao1"),
                      color = "Tert_VE")
 p_VE
 
@@ -272,6 +324,14 @@ pdata_VE$Tert_VE = fct_relevel(
 
 str(pdata_VE) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_VE = data.frame(
+  group1 = c("VE Low", "VE Low", "VE Medium"),
+  group2 = c("VE High", "VE Medium", "VE High"),
+  p = c("0.59", "0.35", "0.59"),
+  y.position = c(250, 265, 280)
+)
+
 # Graph the plot again
 p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE, 
                                          value, 
@@ -279,9 +339,11 @@ p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
+  theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Vitamin E Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin E Intake Categorization") +
   scale_fill_manual(
@@ -291,8 +353,12 @@ p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE,
   scale_x_discrete(
     labels = c("VE Low" = "Low intake",
                "VE Medium" = "Medium intake",
-               "VE High" = "High intake"))
+               "VE High" = "High intake")) +
+  stat_pvalue_manual(stat.test_VE, label = "p")
 p_VE_formatted
+
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_E.png", plot = p_VE_formatted, width = 10, height = 9, dpi = 300)
 
 ```
 
@@ -301,7 +367,7 @@ p_VE_formatted
 ```{r alpha_diversity_analysis_for_all_dietary_antioxidants}
 set.seed(421)
 p_combine = plot_richness(psrare, x = "Tert_combine",
-                          measures = c("Shannon"),
+                          measures = c("Chao1"),
                           color = "Tert_combine")
 p_combine
 
@@ -318,6 +384,14 @@ pdata_combine$Tert_combine = fct_relevel(
 
 str(pdata_combine) # variable denotes metric, value denotes value
 
+# Create p-value data frame
+stat.test_combine = data.frame(
+  group1 = c("Combine Low", "Combine Low", "Combine Medium"),
+  group2 = c("Combine High", "Combine Medium", "Combine High"),
+  p = c("0.40", "0.26", "0.92"),
+  y.position = c(250, 265, 280)
+)
+
 # Graph the plot again
 p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine, 
                                                    value, 
@@ -325,9 +399,11 @@ p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine,
   geom_boxplot(outlier.shape = NA) + # Don't plot outlier points 
   geom_jitter(height = 0, width = 0.2, size = 0.03) + # Space the points out sideways, reducing overlap
   # Add some formatting
-  theme_classic(base_size = 16) +
+  theme_classic(base_size = 18) +
+  theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Shannon Index") + xlab(NULL) +
+  ylab("Chao1 Index") + 
+  xlab("Combined Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Combined Dietary Antioxidant Intake Categorization") +
   scale_fill_manual(
@@ -337,7 +413,11 @@ p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine,
   scale_x_discrete(
     labels = c("Combine Low" = "Low intake",
                "Combine Medium" = "Medium intake",
-               "Combine High" = "High intake"))
+               "Combine High" = "High intake")) +
+    stat_pvalue_manual(stat.test_combine, label = "p")
 p_combine_formatted
+
+# Export the plot
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Combined.png", plot = p_combine_formatted, width = 12, height = 10, dpi = 300)
 
 ```

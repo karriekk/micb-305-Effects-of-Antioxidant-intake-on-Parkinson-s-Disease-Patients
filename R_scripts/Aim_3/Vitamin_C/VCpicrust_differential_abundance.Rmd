@@ -125,7 +125,7 @@ significant_pathways = daa_results_log2fc_filtered %>%
 # save for aim 4
 saveRDS(significant_pathways,'VC_significant_pathways.rds')
 
-# Note that I had to increase the Padj cutoff to get enough to plot!
+
 sanity_peb = pathway_errorbar_fixed(abundance = path_filt, 
                      daa_results_df = daa_results_log2fc_filtered, 
                      Group = metadata_sub$Tert_VC, 

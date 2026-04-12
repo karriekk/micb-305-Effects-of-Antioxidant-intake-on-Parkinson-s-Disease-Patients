@@ -136,7 +136,7 @@ linear_regression_plot = ggplot(meta2, aes(x = log_rel_abund, y = moca_total)) +
 linear_regression_plot
 
 # Export the plot
-ggsave("../../Results/Figures/Aim_4/Indicator_taxon/Association Between Log-10 Transformed Relative Abundance of Escherichia-Shigella and MoCA Score in PD Patients.png", plot = linear_regression_plot, width = 10, height = 8, dpi = 300)
+ggsave("../../Results/Figures/Aim_4/Indicator_taxon/Association Between Log-10 Transformed Relative Abundance of Escherichia-Shigella and MoCA Score in PD Patients.png", plot = linear_regression_plot, width = 10, height = 7, dpi = 300)
 
 ```
 

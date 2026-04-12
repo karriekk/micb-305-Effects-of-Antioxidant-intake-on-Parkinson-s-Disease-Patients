@@ -242,21 +242,6 @@ pheatmap(stats,
 # Create the clustered heatmap with centered color at zero
 # install.packages("pheatmap")
 library('pheatmap')
-pheatmap(stats, 
-         clustering_distance_rows = "euclidean",  
-         clustering_distance_cols = "euclidean", 
-         clustering_method = "complete",          
-         color = color_palette, 
-         breaks = breaks,
-         border_color = "white",       # Clean white borders between cells
-         display_numbers = TRUE,       # Optional: shows the actual R values
-         number_color = "black",
-         fontsize_row = 12,            # Slightly larger for readability
-         fontsize_col = 12,
-         angle_col = 45,               # Tilt labels so they don't overlap
-         main = '',
-         filename = "../../../Results/Figures/Aim_3/MetaCyc-BC_Heatmap_Final.png",
-         height = 8, width = 10)       # Wider to accommodate long names
 
 # to try to minimize white space
 pheatmap(stats, 

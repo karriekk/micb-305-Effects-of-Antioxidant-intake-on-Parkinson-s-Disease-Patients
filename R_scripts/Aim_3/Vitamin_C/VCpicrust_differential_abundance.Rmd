@@ -179,6 +179,42 @@ peb = pathway_errorbar_fixed(abundance = path_filt,
 signif_path = daa_results_log2fc_filtered %>% 
   filter(p_adjust < 0.05)
 
+# Plotting all 37 significant pathways as 2 separate plots
+daa_part1 <- signif_path[1:18, ]
+
+daa_part2 <- signif_path[19:37, ]
+
+peb_part1 = pathway_errorbar_fixed(abundance = path_filt,
+                                   daa_results_df = daa_part1, 
+                                   Group = metadata_sub$Tert_VC, 
+                                   wrap_label = T, wraplength = 45,
+                                   fc_cutoff = 0,
+                                   order_by_log = T,
+                                   p_values_threshold = 1, 
+                                   ko_to_kegg = FALSE, 
+                                   p_value_bar = TRUE, 
+                                   x_lab = "description")
+
+
+peb_part2 = pathway_errorbar_fixed(abundance = path_filt,
+                                   daa_results_df = daa_part2, 
+                                   Group = metadata_sub$Tert_VC, 
+                                   wrap_label = T, wraplength = 45,
+                                   fc_cutoff = 0,
+                                   order_by_log = T,
+                                   p_values_threshold = 1, 
+                                   ko_to_kegg = FALSE, 
+                                   p_value_bar = TRUE, 
+                                   x_lab = "description")
+
+# Save Part 1
+ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-part1.png",
+       plot = peb_part1, width = 18, height = 12)
+
+# Save Part 2
+ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-part2.png",
+       plot = peb_part2, width = 18, height = 12)
+
 # filter for top 10 greatest magnitude changes
 top_10 <- ratio %>%
   filter(pathway %in% signif_path$feature)%>%
@@ -199,14 +235,14 @@ peb10 = pathway_errorbar_fixed(abundance = path_filt,
                      x_lab = "description")
 peb10
 
-ggsave("../../../Results/Figures/Aim_3/VC-picrust-sig-pathways10.png",
+ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-sig-pathways10.png",
        plot = peb10, width = 18, height = 10)
 ```
 
 Heatmap
 
 ```{r identical features}
-sig_features = daa_results_top10 %>% 
+sig_features = signif_path %>% 
   filter(p_adjust < 1, abs(log2_fold_change) > 0) %>% 
   pull('feature') %>% unique()
 
@@ -232,6 +268,13 @@ name_lookup <- daa_annotated_results_df %>%
   distinct()
 
 readable_names <- name_lookup$description[match(rownames(stats), name_lookup$feature)]
+
+# manually finding names
+readable_names[28] <- "D-erythronate degradation II"
+readable_names[29] <- "L-threonate degradation"
+readable_names[30] <- "glycogen biosynthesis III (from α-maltose 1-phosphate)"
+readable_names[31] <- "Entner-Doudoroff pathway I"
+
 rownames(stats) <- readable_names
 colnames(stats) <- readable_names
 # Wrap row names (pathway names) at 30 characters
@@ -244,21 +287,6 @@ view(readable_names)
 # Create the clustered heatmap with centered color at zero
 # install.packages("pheatmap")
 library('pheatmap')
-pheatmap(stats, 
-         clustering_distance_rows = "euclidean",  
-         clustering_distance_cols = "euclidean", 
-         clustering_method = "complete",          
-         color = color_palette, 
-         breaks = breaks,
-         border_color = "white",       # Clean white borders between cells
-         display_numbers = TRUE,       # Optional: shows the actual R values
-         number_color = "black",
-         fontsize_row = 12,            # Slightly larger for readability
-         fontsize_col = 12,
-         angle_col = 45,               # Tilt labels so they don't overlap
-         main = '',
-         filename = "../../../Results/Figures/Aim_3/MetaCyc-VC_Heatmap_Final.png",
-         height = 8, width = 10)       # Wider to accommodate long names
 
 # to try to minimize white space
 pheatmap(stats, 
@@ -277,9 +305,9 @@ pheatmap(stats,
          treeheight_col = 25, 
          legend = TRUE,               
          main = NA,                   # Use NA to properly suppress the title space
-         filename = "../../../Results/Figures/Aim_3/MetaCyc-VC_Heatmap_Final-new.png",
-         width = 8,                   # Increased slightly for your long pathway names
-         height = 6)
+         filename = "../../../Results/Figures/Aim_3/Vitamin_C/MetaCyc-VC_Heatmap_Final-new.png",
+         width = 35,                   # Increased slightly for your long pathway names
+         height = 33)
 
 ```
 

@@ -115,7 +115,7 @@ daa_results_log2fc_filtered = daa_annotated_results_df %>%
 
 # Adjusted P-value = 37 hits
 daa_results_log2fc_filtered %>% 
-  filter(p_adjust < 0.005) %>% 
+  filter(p_adjust < 0.05) %>% 
   nrow()
 
 significant_pathways = daa_results_log2fc_filtered %>% 
@@ -152,28 +152,6 @@ daa_annotated_results_df_filt = daa_annotated_results_df %>%
 daa_annotated_results_df_filt %>% 
   filter(p_adjust < 0.05) %>% 
   nrow()
-
-# Log2 Fold Change values = 8 hits (sufficient for plot)
-daa_annotated_results_df_filt %>% 
-  filter(abs(log2_fold_change) >= 4e-3) %>% 
-  nrow()
-
-daa_annotated_results_df_filt %>% filter(p_adjust< 0.005, abs(log2_fold_change) > 4e-3) %>% nrow()
-
-# Dataframe for plotting
-daa_strict <- daa_annotated_results_df_filt %>% 
-  filter(p_adjust < 0.005, abs(log2_fold_change) > 4e-3)
-
-peb = pathway_errorbar_fixed(abundance = path_filt, 
-                     daa_results_df = daa_strict, 
-                     Group = metadata_sub$Tert_VC, 
-                     wrap_label = T, wraplength=60,
-                     fc_cutoff = 4e-3, order_by_log = T,
-                     p_values_threshold = 0.005, 
-                     order = "name", 
-                     ko_to_kegg = FALSE, 
-                     p_value_bar = TRUE, 
-                     x_lab = "description")
 
 # filter for only significant pathways
 signif_path = daa_results_log2fc_filtered %>% 

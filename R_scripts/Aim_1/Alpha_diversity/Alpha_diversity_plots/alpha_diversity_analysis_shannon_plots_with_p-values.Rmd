@@ -1,5 +1,5 @@
 ---
-title: "Alpha Diversity Analysis Chao1 Plots"
+title: "Alpha Diversity Analysis Shannon Plots"
 author: Yanting Xiong
 output: html_document
 ---
@@ -8,8 +8,6 @@ output: html_document
 ```{r libraries, include = FALSE}
 library(tidyverse)
 library(phyloseq)
-library(ggplot2)
-library(dplyr)
 library(vegan)
 library(broom)
 library(ggpubr)
@@ -72,7 +70,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 set.seed(421)
 
 p_BC = plot_richness(psrare, x = "Tert_BC",
-                     measures = c("Chao1"),
+                     measures = c("Shannon"),
                      color = "Tert_BC")
 p_BC
 
@@ -93,8 +91,8 @@ str(pdata_BC) # variable denotes metric, value denotes value
 stat.test_BC = data.frame(
   group1 = c("BC Low", "BC Low", "BC Medium"),
   group2 = c("BC High", "BC Medium", "BC High"),
-  p = c("0.77", "0.42", "0.91"),
-  y.position = c(250, 265, 280)
+  p = c("0.38", "0.56", "0.19"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -106,7 +104,7 @@ p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Beta-carotene Intake Tertile") + 
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -123,7 +121,7 @@ p_BC_formatted = pdata_BC %>% ggplot(aes(Tert_BC,
 p_BC_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Beta-carotene.png", plot = p_BC_formatted, width = 10, height = 9, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Beta-carotene.png", plot = p_BC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Alpha carotene
@@ -131,7 +129,7 @@ ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Beta-carot
 ```{r alpha_diversity_analysis_for_alpha_carotene}
 set.seed(421)
 p_AC = plot_richness(psrare, x = "Tert_AC",
-                     measures = c("Chao1"),
+                     measures = c("Shannon"),
                      color = "Tert_AC")
 p_AC
 
@@ -152,8 +150,8 @@ str(pdata_AC) # variable denotes metric, value denotes value
 stat.test_AC = data.frame(
   group1 = c("AC Low", "AC Low", "AC Medium"),
   group2 = c("AC High", "AC Medium", "AC High"),
-  p = c("0.93", "0.93", "0.93"),
-  y.position = c(250, 265, 280)
+  p = c("0.56", "0.62", "0.90"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -165,7 +163,7 @@ p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Alpha-carotene Intake Tertile") +
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -182,7 +180,7 @@ p_AC_formatted = pdata_AC %>% ggplot(aes(Tert_AC,
 p_AC_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Alpha-carotene.png", plot = p_AC_formatted, width = 10, height = 9, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Alpha-carotene.png", plot = p_AC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin C
@@ -190,7 +188,7 @@ ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Alpha-caro
 ```{r alpha_diversity_analysis_for_vitamin_c}
 set.seed(421)
 p_VC = plot_richness(psrare, x = "Tert_VC",
-                     measures = c("Chao1"),
+                     measures = c("Shannon"),
                      color = "Tert_VC")
 p_VC
 
@@ -211,8 +209,8 @@ str(pdata_VC) # variable denotes metric, value denotes value
 stat.test_VC = data.frame(
   group1 = c("VC Low", "VC Low", "VC Medium"),
   group2 = c("VC High", "VC Medium", "VC High"),
-  p = c("0.24", "0.85", "0.20"),
-  y.position = c(250, 265, 280)
+  p = c("0.95", "0.41", "0.25"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -224,7 +222,7 @@ p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC,
   # Add some formatting
   theme_classic(base_size = 18) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Vitamin C Intake Tertile") +
   theme(axis.title = element_text(face = "bold")) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
@@ -241,7 +239,7 @@ p_VC_formatted = pdata_VC %>% ggplot(aes(Tert_VC,
 p_VC_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_C.png", plot = p_VC_formatted, width = 10, height = 9, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Vitamin_C.png", plot = p_VC_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin A
@@ -249,7 +247,7 @@ ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_C.
 ```{r alpha_diversity_analysis_for_vitamin_a}
 set.seed(421)
 p_VA = plot_richness(psrare, x = "Tert_VA",
-                     measures = c("Chao1"),
+                     measures = c("Shannon"),
                      color = "Tert_VA")
 p_VA
 
@@ -270,8 +268,8 @@ str(pdata_VA) # variable denotes metric, value denotes value
 stat.test_VA = data.frame(
   group1 = c("VA Low", "VA Low", "VA Medium"),
   group2 = c("VA High", "VA Medium", "VA High"),
-  p = c("0.57", "0.48", "0.77"),
-  y.position = c(300, 320, 340)
+  p = c("0.99", "0.99", "0.99"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -284,7 +282,7 @@ p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Vitamin A Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin A Intake Categorization") +
@@ -300,7 +298,7 @@ p_VA_formatted = pdata_VA %>% ggplot(aes(Tert_VA,
 p_VA_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_A.png", plot = p_VA_formatted, width = 10, height = 9, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Vitamin_A.png", plot = p_VA_formatted, width = 10, height = 9, dpi = 300)
 ```
 
 ### Vitamin E
@@ -308,7 +306,7 @@ ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_A.
 ```{r alpha_diversity_analysis_for_vitamin_e}
 set.seed(421)
 p_VE = plot_richness(psrare, x = "Tert_VE",
-                     measures = c("Chao1"),
+                     measures = c("Shannon"),
                      color = "Tert_VE")
 p_VE
 
@@ -329,8 +327,8 @@ str(pdata_VE) # variable denotes metric, value denotes value
 stat.test_VE = data.frame(
   group1 = c("VE Low", "VE Low", "VE Medium"),
   group2 = c("VE High", "VE Medium", "VE High"),
-  p = c("0.59", "0.35", "0.59"),
-  y.position = c(250, 265, 280)
+  p = c("0.61", "0.61", "0.18"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -343,7 +341,7 @@ p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Vitamin E Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Vitamin E Intake Categorization") +
@@ -359,7 +357,7 @@ p_VE_formatted = pdata_VE %>% ggplot(aes(Tert_VE,
 p_VE_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_E.png", plot = p_VE_formatted, width = 10, height = 9, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Vitamin_E.png", plot = p_VE_formatted, width = 10, height = 9, dpi = 300)
 
 ```
 
@@ -368,7 +366,7 @@ ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Vitamin_E.
 ```{r alpha_diversity_analysis_for_all_dietary_antioxidants}
 set.seed(421)
 p_combine = plot_richness(psrare, x = "Tert_combine",
-                          measures = c("Chao1"),
+                          measures = c("Shannon"),
                           color = "Tert_combine")
 p_combine
 
@@ -389,8 +387,8 @@ str(pdata_combine) # variable denotes metric, value denotes value
 stat.test_combine = data.frame(
   group1 = c("Combine Low", "Combine Low", "Combine Medium"),
   group2 = c("Combine High", "Combine Medium", "Combine High"),
-  p = c("0.40", "0.26", "0.92"),
-  y.position = c(250, 265, 280)
+  p = c("0.70", "0.79", "0.73"),
+  y.position = c(5, 5.3, 5.6)
 )
 
 # Graph the plot again
@@ -403,7 +401,7 @@ p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine,
   theme_classic(base_size = 18) +
   theme(axis.title = element_text(face = "bold")) +
   facet_wrap(~ variable, ncol = 2, scales = "free_y") +
-  ylab("Chao1 Index") + 
+  ylab("Shannon Index") + 
   xlab("Combined Intake Tertile") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   labs(fill = "Combined Dietary Antioxidant Intake Categorization") +
@@ -419,6 +417,6 @@ p_combine_formatted = pdata_combine %>% ggplot(aes(Tert_combine,
 p_combine_formatted
 
 # Export the plot
-ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Chao1/Chao1_Combined.png", plot = p_combine_formatted, width = 12, height = 10, dpi = 300)
+ggsave("../../../../Results/Figures/Aim_1/Alpha_diversity/Shannon/With_p-values/Shannon_Combined.png", plot = p_combine_formatted, width = 12, height = 10, dpi = 300)
 
 ```

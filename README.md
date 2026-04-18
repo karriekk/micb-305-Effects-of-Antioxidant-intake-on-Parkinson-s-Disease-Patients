@@ -121,7 +121,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 #### Aim 4: Link Everything to Cognitive Performance (MoCA)
 - Indicator Taxon - Escherichia-Shigella
 
-  - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_4/Aim4_Indicator_Taxa(version_2_relative_abundance).Rmd)
+  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4/Aim4_Indicator_Taxon(log-transformed_relative_abundance).Rmd)
  
   - [Figure](https://github.com/karriekk/micb-305-Team-5-/blob/main/Results/Figures/Aim_4/Indicator_taxon/Association%20Between%20Log-10%20Transformed%20Relative%20Abundance%20of%20Escherichia-Shigella%20and%20MoCA%20Score%20in%20PD%20Patients.png)
 

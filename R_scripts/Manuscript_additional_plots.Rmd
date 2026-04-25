@@ -19,6 +19,10 @@ library(ggplot2)
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv("../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 
+parkinsons_metadata_filt_cat_moca_low = parkinsons_metadata_filt_cat %>% 
+  filter(moca_total < 26) %>% 
+  nrow() # 51 PD patients
+
 ```
 
 # Visualize the distribution of MoCA Score using Histogram

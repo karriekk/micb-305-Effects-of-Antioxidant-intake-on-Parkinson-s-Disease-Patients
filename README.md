@@ -129,7 +129,7 @@ You can access all of our weekly meeting agendas [here](https://github.com/karri
 #### February
 - [Feb 26](https://github.com/karriekk/micb-305-Team-5-/blob/main/meeting_agenda/Feb%2026%20Agenda.md)
 
-- [Feb 19 Reading Week](https://github.com/karriekk/micb-305-Team-5-/blob/main/meeting_agenda/Reading%20Week%20Agenda.md)
+- [Feb 19 Reading Week](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/meeting_agenda/Feb%2019%20Reading%20Week%20Agenda.md)
 
 - [Feb 12](https://github.com/karriekk/micb-305-Team-5-/blob/main/meeting_agenda/Feb%2012%20Agenda.md)
 

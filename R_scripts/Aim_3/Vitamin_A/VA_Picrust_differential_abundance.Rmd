@@ -14,7 +14,8 @@ library(pheatmap)
 ```
 
 ## R Markdown
-  
+
+Loading files  
 ```{r}
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata_sub = metadata %>% filter(Tert_VA %in% c("VA Low", "VA High")) %>%

@@ -14,10 +14,7 @@ library(Maaslin2)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+Loading Files
 ```{r}
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata_sub = metadata %>% filter(Tert_AC %in% c("AC Low", "AC High")) %>%
@@ -26,9 +23,6 @@ metadata_sub = metadata %>% filter(Tert_AC %in% c("AC Low", "AC High")) %>%
 
 ggpicrust2 to run "Maaslin2", another common differential abundance tool, on your groups of interest and add pathway annotations
 ```{r}
-meta = readRDS('../../../Datasets/phyloseq_taxonomy.rds') %>% .@sam_data %>% data.frame() %>% 
-  rownames_to_column('sample_name')
-
 pathway_abundance = read.delim('../../../QIIME2_outputs/path_abun_unstrat.tsv',row.names = 1)
 
 # Filter
@@ -66,7 +60,7 @@ daa_annotated_results_df_filt %>%
   filter(p_adjust < 0.05) %>% 
   nrow()
 
-# Adjusted P-value for plotting something = 17 hits
+# Adjusted P-value for plotting something = 47 hits
 daa_annotated_results_df_filt %>% 
   filter(p_adjust < 0.31) %>% 
   nrow()
@@ -76,6 +70,7 @@ daa_annotated_results_df_filt %>%
   filter(abs(log2_fold_change) >= 4e-3) %>% 
   nrow()
 
+# Log2 Fold change values + adjusted p value = 8 hits for plot
 daa_annotated_results_df_filt %>% filter(p_adjust< 0.31, abs(log2_fold_change) > 4e-3) %>% nrow()
 
 # Dataframe for plotting
@@ -93,18 +88,18 @@ peb = pathway_errorbar_fixed(abundance = path_filt,
                      p_value_bar = TRUE, 
                      x_lab = "description")
 
-# View the result
-peb
-
-# Save the final version with the tags
-
-ggsave("../../../Results/Figures/Aim_3/Alpha-carotene/AC-picrust-sig-pathways.png",
+# Save
+ggsave("../../../Results/Figures/Aim_3/Alpha-carotene/AC-picrust-pathways.png",
        plot = peb, width = 18, height = 10)
 ```
 
 Heatmap
 
 ```{r identical features}
+# heatmap library
+library('pheatmap')
+
+# workign with same pathways as above
 sig_features = daa_annotated_results_df %>% 
   filter(p_adjust < 0.31, abs(log2_fold_change) > 4e-3) %>% 
   pull('feature') %>% unique()
@@ -136,11 +131,10 @@ colnames(stats) <- readable_names
 
 view(readable_names)
 
-# Create the clustered heatmap with centered color at zero
-# install.packages("pheatmap")
-library('pheatmap')
+# manually adding NA descriptions
+readable_names[6] <- "phenol degradation"
 
-# to try to minimize white space
+# plot to try to minimize white space
 pheatmap(stats, 
          clustering_distance_rows = "euclidean",  
          clustering_distance_cols = "euclidean", 

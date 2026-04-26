@@ -14,6 +14,7 @@ library(Maaslin2)
 
 ## R Markdown
 
+Loading files
 ```{r}
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata_sub = metadata %>% filter(Tert_VC %in% c("VC Low", "VC High")) %>%

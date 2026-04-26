@@ -129,7 +129,7 @@ view(significant_pathways)
 saveRDS(significant_pathways,'BC_significant_pathways.rds')
 ```
 
-Plotting all significant pathways (Fig. S4)
+Pathway plot for all significant pathways (Fig. S4)
 ```{r}
 # filter for significant pathways for plotting 
 significant_pathways_df = daa_results_log2fc_filtered %>% 

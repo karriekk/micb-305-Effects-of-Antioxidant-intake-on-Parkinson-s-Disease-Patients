@@ -14,20 +14,14 @@ library(Maaslin2)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
 ```{r}
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata_sub = metadata %>% filter(Tert_VC %in% c("VC Low", "VC High")) %>%
   mutate(Tert_VC = fct_drop(as.factor(Tert_VC)))
 ```
 
-# ggpicrust2 to run "Maaslin2", another common differential abundance tool, on your groups of interest and add pathway annotations
+ggpicrust2 to run "Maaslin2", another common differential abundance tool, on your groups of interest and add pathway annotations
 ```{r}
-meta = readRDS('../../../Datasets/phyloseq_taxonomy.rds') %>% .@sam_data %>% data.frame() %>% 
-  rownames_to_column('sample_name')
 
 pathway_abundance = read.delim('../../../QIIME2_outputs/path_abun_unstrat.tsv',row.names = 1)
 
@@ -54,7 +48,7 @@ readRDS('daa_annotated_results_df.rds')
 
 ```
 
-# Sanity Check/Manual
+Sanity Check/Manual log2fold change values
 ```{r}
 # STEP 1: Convert your counts to relative abundance
 
@@ -124,28 +118,14 @@ significant_pathways = daa_results_log2fc_filtered %>%
 
 # save for aim 4
 saveRDS(significant_pathways,'VC_significant_pathways.rds')
-
-
-sanity_peb = pathway_errorbar_fixed(abundance = path_filt, 
-                     daa_results_df = daa_results_log2fc_filtered, 
-                     Group = metadata_sub$Tert_VC, 
-                     wrap_label = F, wraplength = 60,
-                     fc_cutoff = 0, order_by_log = F,
-                     p_values_threshold = 0.005, 
-                     ko_to_kegg = F, 
-                     p_value_bar = TRUE, 
-                     x_lab = "description")
-# Save the final sanity checked version with the tags
-ggsave("../../../Results/Figures/Aim_3/VC-picrust-sanity-final-with-labels.png", plot = sanity_peb, width = 12, height = 7, dpi = 300)
-
 ```
 
-Plots
+Pathway Plot for all significant pathways (Fig. S3)
 ```{r}
 source('../ggpicrust2_errorbar_function_fixed.R')
 
 # Filter out NA in p-values and log2 fold change columns
-daa_annotated_results_df_filt = daa_annotated_results_df %>%
+daa_annotated_results_df_filt = daa_results_log2fc_filtered %>%
   filter(!is.na(p_adjust), !is.na(log2_fold_change))
 
 # Adjusted P-value = 17 hits
@@ -160,12 +140,14 @@ signif_path = daa_results_log2fc_filtered %>%
 # Plotting all 37 significant pathways as 2 separate plots
 daa_part1 <- signif_path[1:18, ]
 
+# Manually adding missing descriptions
 daa_part2 <- signif_path[19:37, ] # missing names for some
 daa_part2$description[10] <- "D-erythronate degradation II"
 daa_part2$description[11] <- "L-threonate degradation"
 daa_part2$description[12] <- "glycogen biosynthesis III (from α-maltose 1-phosphate)"
 daa_part2$description[13] <- "Entner-Doudoroff pathway I"
 
+# first half of plot
 peb_part1 = pathway_errorbar_fixed(abundance = path_filt,
                                    daa_results_df = daa_part1, 
                                    Group = metadata_sub$Tert_VC, 
@@ -178,6 +160,7 @@ peb_part1 = pathway_errorbar_fixed(abundance = path_filt,
                                    x_lab = "description")
 
 
+# second half of plot
 peb_part2 = pathway_errorbar_fixed(abundance = path_filt,
                                    daa_results_df = daa_part2, 
                                    Group = metadata_sub$Tert_VC, 
@@ -196,6 +179,11 @@ ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-part1.png",
 # Save Part 2
 ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-part2.png",
        plot = peb_part2, width = 18, height = 12)
+
+```
+
+Plotting Top 10 pathways with greatest magnitude change (Fig.3D)
+```{r}
 
 # filter for top 10 greatest magnitude changes
 top_10 <- ratio %>%
@@ -223,6 +211,8 @@ ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-picrust-sig-pathways10.png",
 Heatmap
 
 ```{r identical features}
+library('pheatmap')
+
 sig_features = signif_path %>% 
   filter(p_adjust < 1, abs(log2_fold_change) > 0) %>% 
   pull('feature') %>% unique()
@@ -265,11 +255,8 @@ rownames(stats) <- str_wrap(rownames(stats), width = 30)
 colnames(stats) <- str_wrap(colnames(stats), width = 30)
 view(readable_names)
 
-# Create the clustered heatmap with centered color at zero
-# install.packages("pheatmap")
-library('pheatmap')
 
-# to try to minimize white space
+# plotting and trying to minimize white space
 pheatmap(stats, 
          clustering_distance_rows = "euclidean",  
          clustering_distance_cols = "euclidean", 
@@ -292,7 +279,7 @@ pheatmap(stats,
 
 ```
 
-See how similar your sample groups are
+PCA plot
 ```{r PCA}
 library(ggExtra)
 
@@ -307,24 +294,21 @@ pca_plot = pca_plot +
   theme_minimal() +
   labs(color = "Tert_VC")
 
-# Add the marginal density plots manually
-# type = "density" creates the curves
-# groupFill = TRUE ensures the colors match your groups
-# alpha = 0.3 sets the transparency you want
+# Adding the marginal density plots manually
 final_plot = ggMarginal(pca_plot, 
                         type = "density", 
                         groupFill = TRUE, 
                         alpha = 0.3)
 
-# 4. Save the final object
-ggsave("../../../Results/Figures/Aim_3/VC-pathway-pca.png", 
+# Save the final object
+ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-pathway-pca.png", 
        plot = final_plot, 
        width = 8, 
        height = 6, 
        dpi = 300)
 ```
 
-Volcano
+Volcano Plot (Fig.3A)
 ```{r}
 library(ggrepel)
 library(stringr)
@@ -343,8 +327,8 @@ plot_data <- daa_annotated_results_df %>%
 # 1. Create a separate dataframe for just the top 10 hits
 # We use slice_min to get the 10 lowest p_adjust values
 top_10_labels <- plot_data %>%
-  filter(p_adjust < 0.05) %>%      # Only significant hits
-  slice_min(p_adjust, n = 10)      # Take the 10 smallest p-values
+  filter(p_adjust < 0.05) %>%      
+  slice_min(p_adjust, n = 10)     
 
 # 2. Update your volcano plot
 volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = status)) +
@@ -354,8 +338,6 @@ volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = 
   scale_color_manual(values = c("More Abundant (VC Low)" = "#D55E00", 
                                 "Less Abundant (VC High)" = "#0072B2", 
                                 "Not Significant" = "grey70")) +
-  
-  # Use the new top_10_labels dataframe here
   
   theme_minimal() +
   labs(
@@ -374,7 +356,7 @@ volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = 
 
 # Display and Save
 print(volcano_plot)
-ggsave("../../../Results/Figures/Aim_3/VC-volcano-plot-top10.png", 
+ggsave("../../../Results/Figures/Aim_3/Vitamin_C/VC-volcano-plot.png", 
        plot = volcano_plot, width = 12, height = 10, dpi = 300)
 ```
 

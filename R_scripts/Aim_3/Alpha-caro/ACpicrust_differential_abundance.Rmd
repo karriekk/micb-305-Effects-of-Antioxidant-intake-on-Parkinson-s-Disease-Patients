@@ -53,7 +53,7 @@ saveRDS(daa_annotated_results_df,'daa_annotated_results_df.rds')
 readRDS('daa_annotated_results_df.rds')
 
 ```
-Plots
+Pathway Plots
 ```{r}
 source('../ggpicrust2_errorbar_function_fixed.R')
 
@@ -162,8 +162,8 @@ pheatmap(stats,
          height = 6)
 
 ```
-See how similar your sample groups are
 
+PCA plots
 ```{r PCA}
 # Generate pathway PCA plot
 pca = pathway_pca(abundance = path_filt,

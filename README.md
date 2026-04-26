@@ -46,15 +46,15 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
 
   - R scripts
 
-    - [Bray-Curtis](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_bray-curtis.Rmd)
+    - [Bray-Curtis](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_1%20(Table%201%2C%20Figure%20S1)/Beta_diversity%20(Table%201)/beta_diversity_analysis_bray-curtis.Rmd)
    
-    - [Weighted UniFrac](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_weighted_unifrac.Rmd)
+    - [Weighted UniFrac](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_1%20(Table%201%2C%20Figure%20S1)/Beta_diversity%20(Table%201)/beta_diversity_analysis_weighted_unifrac.Rmd)
    
-    - [Unweighted UniFrac](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_unweighted_unifrac.Rmd)
+    - [Unweighted UniFrac](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_1%20(Table%201%2C%20Figure%20S1)/Beta_diversity%20(Table%201)/beta_diversity_analysis_unweighted_unifrac.Rmd)
    
-    - [Jaccard](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Beta_diversity/beta_diversity_analysis_jaccard.Rmd)
+    - [Jaccard](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_1%20(Table%201%2C%20Figure%20S1)/Beta_diversity%20(Table%201)/beta_diversity_analysis_jaccard.Rmd)
  
-  - [Table](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Tables/Aim_1/Beta_diversity.md)
+  - [Table](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Tables/Aim_1_Beta_Diversity%20(Table_1)/Beta_diversity.md)
   
 #### Aim 2: Taxonomy Analysis (Figure 1, Table S1, Table S2)
 - Indicator species analysis (Figure 1, Table S2)

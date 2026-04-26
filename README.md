@@ -5,9 +5,9 @@ Team 5 members: Carrie Sun, Coe McGrath, Cynthia Lin, Emily Ju, Yanting Xiong
 Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.28052
 
 ## Project Summary
-Parkinson's disease (PD) is an age-related neurodegenerative disorder characterized by both motor and non-motor symptoms. In addition to the well-characterization neuropathological and clinal features, growing evidence highlights the significance of the gut microbiome in modulating the nervous system through the gut-brain axis, and its potential role in PD pathophysiology.
+Parkinson's disease (PD) is an age-related neurodegenerative disorder characterized by both motor and non-motor symptoms. In addition to the well-characterized neuropathological and clinal features, growing evidence highlights the significance of the gut microbiome in modulating the nervous system through the gut-brain axis, and its potential role in PD pathophysiology.
 
-Diet plays a key role in modulating the gut microbiome. And dietary antioxidants have gained increasing attention for their potential neuroprotective effects, which may be explained by their ability to modulate the gut microbiome and reduce oxidative stress. 
+Diet plays a key role in modulating the gut microbiome, and dietary antioxidants have gained increasing attention for their potential neuroprotective effects, which may be explained by their ability to modulate the gut microbiome and reduce oxidative stress. 
 
 However, there is limited insight into how antioxidant-driven microbiome changes are correlated with shifts in cognitive performance within PD populations. Therefore, this study aimed to investigate the impact of dietary antioxidant intake, specifically vitamins A, C, E, alpha- and beta-carotene, and their synergistic effects, on the gut microbiome in association with the cognitive performance in PD patients.
 

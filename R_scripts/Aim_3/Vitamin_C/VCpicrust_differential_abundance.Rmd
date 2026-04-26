@@ -52,7 +52,7 @@ diff_abun = pathway_daa(abundance = path_filt,
                    select = NULL,
                    reference = "VC Low")
 
-# Annotate pathway codes (e.g., MetaCyc IDs) with human-readable descriptions
+# Annotate pathway codes (MetaCyc IDs) with human-readable descriptions
 daa_annotated_results_df = pathway_annotation(pathway = "MetaCyc",
                                               daa_results_df = diff_abun,
                                               ko_to_kegg = FALSE)
@@ -66,7 +66,7 @@ readRDS('daa_annotated_results_df.rds')
 ```
 
 ## Manual Log2 Fold Change Calculation
-Maaslin2 provided coefficients appeared very out of range of what we expected so we did manual $log_2$ fold change (L2FC) calculations for each. This section calculates the magnitude of change between groups.
+Maaslin2 provided coefficients that appeared very out of range of what we expected so we did manual $log_2$ fold change (L2FC) calculations for each. This section calculates the magnitude of change between groups.
 ```{r}
 # STEP 1: Convert your counts to relative abundance
 path_relab = apply(path_filt, MARGIN = 2, function(x) x/sum(x))
@@ -236,7 +236,7 @@ breaks <- seq(-1, 1, length.out = 41)  # 40 colors + 1 for the endpoint
 # Map technical IDs to readable descriptions for plot labels
 name_lookup <- daa_annotated_results_df %>%
   filter(feature %in% sig_features) %>%
-  select(feature, description) %>% # Adjust 'description' to your actual column name
+  select(feature, description) %>% 
   distinct()
 
 readable_names <- name_lookup$description[match(rownames(stats), name_lookup$feature)]

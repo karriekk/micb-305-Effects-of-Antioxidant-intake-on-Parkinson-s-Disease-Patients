@@ -1,36 +1,49 @@
 ---
-title: "Picrust_differential_abundance"
+title: "Beta-Carotene Picrust differential abundance"
 author: "Cynthia"
 date: "2026-03-14"
 output: html_document
 ---
 
+# Introductions
+For aim 3 we wanted to identify the functional pathways of significance. This script is designed to identify and visualize functional differences in the gut microbiome between individuals with Low vs. High Beta-Carotene(BC) intake within a Parkinson’s Disease cohort. It utilizes PICRUst2 pathway predictions and applies Maaslin2 for robust differential abundance testing. Pathway plot, Heatmap plot, PCA plot, and volcano plot code is also included here.
+
+## Environment Setup and Data Loading
+This section starts the analysis by loading required bioinformatic and visualization libraries and preparing the metadata.
 ```{r libraries, include=FALSE}
+# Core data manupulation and plotting
 library(tidyverse)
 library(phyloseq)
+library(ggrepel)
+library(stringr)
+
+# analysis specific tools
 library(ggpicrust2)
 library(Maaslin2)
-library(ggrepel)
-```
 
-## R Markdown
+# visualization-specific tools
+library(pheatmap)
+library(ggExtra)
 
-Loading Files
-```{r}
+# Loading metadata and filter for specific BC comparison groups
 metadata = read.csv("../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
+
+# focusing only on low vs high BC tertiles and drop unused factor levels
 metadata_sub = metadata %>% filter(Tert_BC %in% c("BC Low", "BC High")) %>%
   mutate(Tert_BC = fct_drop(as.factor(Tert_BC)))
 ```
 
-ggpicrust2 to run "Maaslin2", another common differential abundance tool, on groups of interest and add pathway annotations
+## Differential Abundance Analysis (Maaslin2)
+We perform the core statistical testing here, using Maaslin2 to find pathways that differ significantly while adjusting for potential confounders like Sex, Age, and entacapone use.
 ```{r}
-
+# Load predicted MetaCyc pathway abundances from QIIME2/PICRUst2 output
 pathway_abundance = read.delim('../../../QIIME2_outputs/path_abun_unstrat.tsv',row.names = 1)
 
-# Filter
+# Subset the abundance table to match the samples present in our filtered metadata
 path_filt = pathway_abundance %>% select(all_of(rownames(metadata_sub)))
 
-
+# Run Differential Abundance Analysis (DAA) using Maaslin2
+# Adjusting for Sex, Age, and Entacapone usage as fixed effects
 diff_abun = pathway_daa(abundance = path_filt,
                    metadata = metadata_sub,
                    group = "Tert_BC",
@@ -39,98 +52,81 @@ diff_abun = pathway_daa(abundance = path_filt,
                    select = NULL,
                    reference = "BC Low")
 
+# Annotate pathway codes (e.g., MetaCyc IDs) with human-readable descriptions
 daa_annotated_results_df = pathway_annotation(pathway = "MetaCyc",
                                               daa_results_df = diff_abun,
                                               ko_to_kegg = FALSE)
  
-# save
+# Cache the results to avoid re-running intensive computations
 saveRDS(daa_annotated_results_df,'daa_annotated_results_df.rds')
 
+# reading saved results
 readRDS('daa_annotated_results_df.rds')
 
 ```
-Sanity Check/Manual log2fold change values
+## Manual Log2 Fold Change Calculation
+Maaslin2 provided coefficients that appeared very out of range of what we expected so we did manual $log_2$ fold change (L2FC) calculations for each. This section calculates the magnitude of change between groups.
 ```{r}
-source('../ggpicrust2_errorbar_function_fixed.R')
-
 # STEP 1: Convert your counts to relative abundance
-
-# Calculation must be done PER SAMPLE (column), not per feature (row)!!
 path_relab = apply(path_filt, MARGIN = 2, function(x) x/sum(x))
-# double check that all counts sum to 1 now
-
-table(colSums(path_relab)) # See the module for why some aren't exactly 1!
 
 # STEP 2: make a data table with all your samples, counts per pathway, and variable of interest.
-
-# First I'll make a 'long' version of the pathway count table
 path_long = path_relab %>% 
   as.data.frame() %>% # apply() turned it into a matrix, need a data frame
   rownames_to_column('pathway') %>% # move the function names to a column
   pivot_longer(cols = -pathway, names_to = 'sample_name', values_to = 'value')
 
-# Then I'll add my variable of interest
+# adding my variable of interest
 combined_table = path_long %>% left_join(metadata_sub %>% rownames_to_column('sample_name'), by = 'sample_name')
 head(combined_table)
 
 # STEP 3: Add Pseudocount
-
-# Very important: later on, we're going to divide by values that might be zero and use log transformations. We need to add a pseudocount to everything first.
 # half of the smallest non-zero value in the relative abundance data:
 pseudocount_value = min(combined_table$value[combined_table$value>0])/2
-pseudocount_value # 5.1e-07, real small
+pseudocount_value
 
 # Then add it to all the abundances:
 combined_table$value = combined_table$value + pseudocount_value
-min(combined_table$value) # Now equal to the pseudocount!
+min(combined_table$value) # Now equal to the pseudocount
 
 
 # STEP 4: for every pathway, calculate the average relative abundance for each group of interest.
-
-# There shouldn't be any NAs, but can include na.rm=T in mean() for safety
-# Can use group_modify as well, or other nifty approaches
 avg_abundances = combined_table %>% 
-  group_by(pathway,Tert_BC) %>% # pathway and variable of interest
+  group_by(pathway,Tert_BC) %>% 
   summarize(value = mean(value)) %>% 
-  ungroup() # Don't forget to ungroup!
+  ungroup() 
 
 # STEP 5: Take the ratio of your groups of interest, then apply a log2 fold change
-
-# Personally, I'll pivot wider to make it easier
 ratio = avg_abundances %>% 
   pivot_wider(names_from = Tert_BC, values_from = value) %>% 
-  mutate(ratio = `BC High`/`BC Low`) %>% # Group of interest / control group, if possible
-  mutate(log2fc = log2(ratio)) # Could combine with above step
+  mutate(ratio = `BC High`/`BC Low`) %>% 
+  mutate(log2fc = log2(ratio)) 
 
-head (ratio) # If they have NAs, it might be because of their normalization technique (ex. CLR, which generates negative abundance values)
+head (ratio)
 
-# STEP 6: Filter for log2FC >=1
-# ideally this is an absolute log2FC cutoff (<=-1 or >=1), but I didn't specify that so >=1 is fine.
+# STEP 6: Filter for absolute log2FC >=1
 ratio_filt = ratio %>% 
   filter(abs(log2fc)>=1)
 
-# Filter the differential abudnance results to only include those above the log2 fold change cutoff
+# Filter the differential abundance results to only include those above the log2 fold change cutoff
 daa_results_log2fc_filtered = daa_annotated_results_df %>% 
   filter(feature %in% ratio_filt$pathway)
 
-# Adjusted P-value = 21 hits
-daa_results_log2fc_filtered %>% 
-  filter(p_adjust < 0.05) %>% 
-  nrow()
-
+# Extracting final significant pathway names for downstream use
 significant_pathways = daa_results_log2fc_filtered %>% 
   filter(p_adjust < 0.05) %>%
   pull(feature)
 
-# check to see if any NA descriptions to note more manual adding later
-view(significant_pathways)
-
-# save for aim 4
+# save
 saveRDS(significant_pathways,'BC_significant_pathways.rds')
 ```
 
-Pathway plot for all significant pathways (Fig. S4)
+## Visualizing Significant Pathways (Error Bar Plots)
+These plots visualize the mean proportion of pathways in each group and their associated effect sizes. The final plot is in our manuscript as Fig. S4
 ```{r}
+# Load custom formatting function for pathway plots
+source('../ggpicrust2_errorbar_function_fixed.R')
+
 # filter for significant pathways for plotting 
 significant_pathways_df = daa_results_log2fc_filtered %>% 
   filter(p_adjust < 0.05)
@@ -156,21 +152,12 @@ sanity_peb = pathway_errorbar_fixed(abundance = path_filt,
 ggsave("../../../Results/Figures/Aim_3/Beta-carotene/BC-picrust-sanity-final-with-labels.png", plot = sanity_peb, width = 12, height = 7, dpi = 300)
 ```
 
-Plotting Top 10 pathways with greatest magnitude change (Fig.3D)
+## Top 10 Magnitude Changes
+This identifies and plots the pathways with the greatest magnitude(not just significant) shifts between Vitamin C levels. In our manuscript this is Fig.3D
 ```{r}
-
-# Filter out NA in p-values and log2 fold change columns
-daa_annotated_results_df_filt = daa_annotated_results_df %>%
-  filter(!is.na(p_adjust), !is.na(log2_fold_change))
-
-
-# filter for only significant pathways
-signif_path = daa_results_log2fc_filtered %>% 
-  filter(p_adjust < 0.05)
-
 # filter for top 10 greatest log2fc
 top_10 <- ratio %>%
-  filter(pathway %in% signif_path$feature)%>%
+  filter(pathway %in% significant_pathways_df$feature)%>%
   arrange(desc(abs(log2fc))) %>%  # Sort by greatest magnitude L2FC
   head(10)
 
@@ -178,6 +165,7 @@ top_10 <- ratio %>%
 daa_results_top10 = daa_annotated_results_df %>% 
   filter(feature %in% top_10$pathway)
 
+# plotting only those pathways
 peb10 = pathway_errorbar_fixed(abundance = path_filt, 
                      daa_results_df = daa_results_top10, 
                      Group = metadata_sub$Tert_BC, 
@@ -188,26 +176,27 @@ peb10 = pathway_errorbar_fixed(abundance = path_filt,
                      p_value_bar = TRUE, 
                      x_lab = "description")
 
+# save
 ggsave("../../../Results/Figures/Aim_3/Beta-carotene/BC-picrust-sig-pathways10.png",
        plot = peb10, width = 18, height = 15, dpi = 300)
 ```
 
-Heatmaps
 
+## Correlation Heatmap
+This heatmap explores how the significant pathways correlate with one another across samples, revealing functional modules. This was not used directly in our manuscript, only when characterizing initial trends observed at beginning of analysis.
 ```{r identical features}
-# Create the clustered heatmap with centered color at zero
-# install.packages("pheatmap")
-library('pheatmap')
-
-# filter for significant features
+# pulling features out
 sig_features = daa_results_log2fc_filtered %>% 
   filter(p_adjust < 0.05, abs(log2_fold_change) > 0) %>% 
   pull('feature') %>% unique()
 
+# Normalize counts to relative abundance (Total Sum Scaling) to ensure 
+# correlations are based on biological proportions rather than sequencing depth
 path_relab = path_filt %>% 
   apply(2,function(x) x/sum(x)) %>% as.data.frame()
 colSums(path_relab) # Should be all 1
 
+# Calculate Pearson correlation between significant pathways
 stats = path_relab %>% t() %>%  # switch rows and columns
   as.data.frame() %>% # Lets us use select()
   select(all_of(sig_features)) %>% 
@@ -219,15 +208,15 @@ color_palette <- colorRampPalette(c("blue", "white", "red"))(40)
 # Define breaks for the color scale
 breaks <- seq(-1, 1, length.out = 41)  # 40 colors + 1 for the endpoint
 
-# Lookup Names
+# Map technical IDs to readable descriptions for plot labels
 name_lookup <- daa_results_log2fc_filtered %>%
   filter(feature %in% sig_features) %>%
-  select(feature, description) %>% # Adjust 'description' to your actual column name
+  select(feature, description) %>% 
   distinct()
 
 readable_names <- name_lookup$description[match(rownames(stats), name_lookup$feature)]
 
-# manually fixing NA
+# manually fixing NA descriptions
 readable_names[17] <- "Entner-Doudoroff pathway I"
 
 # wrapping labels
@@ -236,7 +225,7 @@ colnames(stats) <- str_wrap(colnames(stats), width = 35)
 
 view(readable_names)
 
-# heatmap plot
+# plotting and trying to minimize white space
 pheatmap(stats, 
          clustering_distance_rows = "euclidean",  
          clustering_distance_cols = "euclidean", 
@@ -260,13 +249,12 @@ pheatmap(stats,
 
 ```
 
-
-PCA plots
+## PCA and Volcano Visualization
+This final section provides a global overview of sample similarity (PCA) and a summary of all statistical tests (Volcano Plot). The volcano plot generated here was used in our manuscript as Fig.3C
+### PCA (beta diversity)
 ```{r PCA}
-# load libraries needed
-library(ggExtra)
-library(ggplot2)
-
+# Define custom color palettes for the High and Low groups to ensure 
+# consistency across all manuscript figures.
 line_cols <- c(
   "BC High" = "#D96B6B",
   "BC Low"  = "#4F97D7"
@@ -278,6 +266,8 @@ fill_cols <- c(
   "BC Low"  = "#6FA8DC"
 )
 
+# Generate the base PCA plot to visualize functional (pathway) similarity.
+# Marginal curves are disabled here because they will be added manually for better control.
 pca_plot <- pathway_pca(
   abundance = path_filt,
   metadata = metadata_sub, 
@@ -295,6 +285,8 @@ pca_plot <- pathway_pca(
     legend.key = element_rect(fill = "white", color = NA)
   )
 
+# Use ggMarginal to add density plots to the top and right margins. 
+# This helps visualize where the bulk of samples in each group fall along PC1 and PC2.
 final_plot <- ggMarginal(
   pca_plot,
   type = "density",
@@ -303,6 +295,7 @@ final_plot <- ggMarginal(
   alpha = 0.35
 )
 
+# save
 ggsave(
   "../../../Results/Figures/Aim_3/Beta-carotene/BC-pathway-pca.png",
   plot = final_plot,
@@ -313,9 +306,9 @@ ggsave(
 )
 ```
 
-Volcano Plot (Fig.3C)
+### Volcano plot
 ```{r}
-# 1. Join the p-values from Maaslin2 with the log2FC calculated
+# Join the p-values from Maaslin2 with the log2FC calculated
 plot_data <- daa_annotated_results_df %>%
   left_join(ratio, by = c("feature" = "pathway")) %>%
   mutate(
@@ -327,7 +320,7 @@ plot_data <- daa_annotated_results_df %>%
     )
   )
 
-# 2. Create the Volcano Plot
+# Create the Volcano Plot
 volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = status)) +
   geom_point(alpha = 0.6, size = 2) +
   # Add threshold lines
@@ -352,26 +345,17 @@ volcano_plot <- ggplot(plot_data, aes(x = log2fc, y = -log10(p_adjust), color = 
   ) +
   theme(legend.position = "bottom")
 
+# generating volcano plot
 volcano_plot <- volcano_plot +
   theme(
-    # Increase general text size (base_size)
     text = element_text(size = 16), 
-    
-    # Specifically target axis titles (the labels on the X and Y axes)
     axis.title = element_text(size = 18, face = "bold"),
-    
-    # Specifically target axis numbers (the tick labels)
     axis.text = element_text(size = 14),
-    
-    # Increase legend text and title
     legend.text = element_text(size = 14),
     legend.title = element_text(size = 16, face = "bold")
   )
 
-# Show the plot
-print(volcano_plot)
-
-# 3. Save the plot
+# Save
 ggsave("../../../Results/Figures/Aim_3/Beta-carotene/BC-volcano-plot.png", 
        plot = volcano_plot, width = 10, height = 8, dpi = 300)
 ```

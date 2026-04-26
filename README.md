@@ -17,7 +17,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 
 - [Metadata filtering and wrangling](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_0/metadata_filtering_and_wrangling.Rmd)
 
-#### Aim 1: Diversity Analysis (Table 1, FigS1)
+#### Aim 1: Diversity Analysis (Table 1, Fig S1)
 - Alpha diversity analysis (Fig S1)
 
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Alpha_diversity/alpha_diversity_analysis.Rmd)
@@ -63,7 +63,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
  
   - [Tables](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Tables/Aim_2/Differential_abundance_analysis)
 
-#### Aim 3: Functional Analysis (Fig3)
+#### Aim 3: Functional Analysis (Fig 3)
 - Alpha-carotene
   
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_3/Alpha-caro/ACpicrust_differential_abundance.Rmd)
@@ -100,7 +100,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Combined)
 
-#### Aim 4: Link Everything to Cognitive Performance (MoCA) (Fig2)
+#### Aim 4: Link Everything to Cognitive Performance (MoCA) (Fig 2)
 - Indicator Taxon - Escherichia-Shigella
 
   - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4/Aim4_Indicator_Taxon(log-transformed_relative_abundance).Rmd)

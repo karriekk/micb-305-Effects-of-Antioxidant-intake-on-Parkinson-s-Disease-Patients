@@ -74,37 +74,37 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
 #### Aim 3: Functional Analysis (Figure 3, Figure S3, Figure S4)
 - Alpha-carotene
   
-  - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_3/Alpha-caro/ACpicrust_differential_abundance.Rmd)
+  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Alpha-caro/ACpicrust_differential_abundance.Rmd)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Alpha-carotene)
  
 - Beta-carotene
   
-  - [R scripts](https://github.com/karriekk/micb-305-Team-5-/tree/main/R_scripts/Aim_3/Beta-caro)
+  - [R scripts](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Beta-caro/BCpicrust_differential_abundance.Rmd)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Beta-carotene)
  
 - Vitamin A
   
-  - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_3/Vitamin_A/VA_Picrust_differential_abundance.Rmd)
+  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Vitamin_A/VA_Picrust_differential_abundance.Rmd)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_A)
  
 - Vitamin C
   
-  - [R scripts](https://github.com/karriekk/micb-305-Team-5-/tree/main/R_scripts/Aim_3/Vitamin_C)
+  - [R scripts](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/tree/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Vitamin_C)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_C)
  
 - Vitamin E
   
-  - [R scripts](https://github.com/karriekk/micb-305-Team-5-/tree/main/R_scripts/Aim_3/Vitamin_E)
+  - [R scripts](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/tree/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Vitamin_E)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Vitamin_E)
  
 - Combined
   
-  - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_3/Combined_index/combined_picrust_differential_abundance.Rmd)
+  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_3%20(Figure%203%2C%20Figure%20S3%2C%20Figure%20S4)/Combined_index/combined_picrust_differential_abundance.Rmd)
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Combined)
 

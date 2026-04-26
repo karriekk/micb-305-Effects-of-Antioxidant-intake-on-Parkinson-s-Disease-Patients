@@ -17,8 +17,8 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 
 - [Metadata filtering and wrangling](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_0/metadata_filtering_and_wrangling.Rmd)
 
-#### Aim 1: Diversity Analysis
-- Alpha diversity analysis
+#### Aim 1: Diversity Analysis (Table 1, FigS1)
+- Alpha diversity analysis (Fig S1)
 
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_1/Alpha_diversity/alpha_diversity_analysis.Rmd)
  
@@ -34,7 +34,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
    
     - [Observed](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_1/Alpha_diversity/Observed)
  
-- Beta diversity analysis
+- Beta diversity analysis (Table 1)
 
   - R scripts
 
@@ -48,8 +48,8 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
  
   - [Table](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Tables/Aim_1/Beta_diversity.md)
   
-#### Aim 2: Taxonomy Analysis
-- Indicator species analysis
+#### Aim 2: Taxonomy Analysis (Fig 1, Table S2)
+- Indicator species analysis (Fig1)
 
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_2/indicator_species_analysis/indicator_species_analysis(final_version).Rmd)
  
@@ -57,13 +57,13 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
 
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_2/Indicator_species)
 
-- Differential abundance analysis
+- Differential abundance analysis (Table S2)
 
   - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_2/Differential_abundance_analysis/differential_abundance_analysis_maaslin2.Rmd)
  
   - [Tables](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Tables/Aim_2/Differential_abundance_analysis)
 
-#### Aim 3: Functional Analysis
+#### Aim 3: Functional Analysis (Fig3)
 - Alpha-carotene
   
   - [R script](https://github.com/karriekk/micb-305-Team-5-/blob/main/R_scripts/Aim_3/Alpha-caro/ACpicrust_differential_abundance.Rmd)
@@ -100,7 +100,7 @@ Link to the original dataset by Cirstea et al.:  https://doi.org/10.1002/mds.280
  
   - [Figures](https://github.com/karriekk/micb-305-Team-5-/tree/main/Results/Figures/Aim_3/Combined)
 
-#### Aim 4: Link Everything to Cognitive Performance (MoCA)
+#### Aim 4: Link Everything to Cognitive Performance (MoCA) (Fig2)
 - Indicator Taxon - Escherichia-Shigella
 
   - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4/Aim4_Indicator_Taxon(log-transformed_relative_abundance).Rmd)

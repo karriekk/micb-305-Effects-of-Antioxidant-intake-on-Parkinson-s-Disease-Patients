@@ -3,8 +3,12 @@ title: "Alpha Diversity Analysis Shannon Plots"
 author: Yanting Xiong
 output: html_document
 ---
-## Library loading
 
+## Introduction
+This R Markdown script performs an Alpha Diversity Analysis focused on the Shannon Index to evaluate both the richness and evenness of the gut microbiome in Parkinson’s Disease patients across different antioxidant intake levels. It integrates data normalization (rarefaction), visualization with ggplot2, and manual p-value annotations via ggpubr to display results from clinical confounder-adjusted models.
+
+## Library loading
+This section loads the tools required for microbiome data handling, statistical analysis, and advanced plot annotations.
 ```{r libraries, include = FALSE}
 library(tidyverse)
 library(phyloseq)
@@ -14,7 +18,7 @@ library(ggpubr)
 ```
 
 ## Load the data
-
+This section imports the raw data files and filters the metadata to ensure compatibility with downstream statistical models.
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv('../../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
@@ -31,7 +35,7 @@ taxonomy = read.delim('../../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object
-
+This chunk merges the separate counts, taxonomy, and metadata into a unified phyloseq object for standardized processing.
 ```{r Create a Phyloseq object}
 taxonomy_formatted = taxonomy %>% 
   separate(col = Taxon,
@@ -49,7 +53,7 @@ ps = phyloseq(sample_data(parkinsons_metadata_filt_cat_entacapone_NA_removed),
 ```
 
 ## Alpha rarefaction curve
-
+This section normalizes sequencing depth across all samples to prevent library size bias from affecting diversity calculations.
 ```{r alpha_rarefaction}
 # Alpha rarefaction curve
 rarecurve(t(data.frame(ps@otu_table)),
@@ -63,6 +67,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 ```
 
 ## Alpha Diversity Analysis
+This section visualizes the Simpson Index for antioxidant intake tertiles and adds statistical p-values derived from adjusted linear models. Note: The script repeats this workflow—Data Extraction -> Factor Releveling -> Manual Stat Definition -> Plotting for antioxidant groups.
 
 ### Beta carotene
 

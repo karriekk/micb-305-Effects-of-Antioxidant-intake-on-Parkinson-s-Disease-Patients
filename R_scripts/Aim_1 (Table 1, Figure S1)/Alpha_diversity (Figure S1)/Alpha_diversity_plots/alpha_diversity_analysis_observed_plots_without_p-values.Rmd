@@ -3,8 +3,12 @@ title: "Alpha Diversity Analysis Observed Plots"
 author: Yanting Xiong
 output: html_document
 ---
-## Library loading
 
+## Introduction
+This R Markdown script performs an Alpha Diversity Analysis focused on Observed Features to quantify microbial richness across various dietary antioxidant intake levels in Parkinson’s Disease patients across different antioxidant intake levels. It integrates data normalization (rarefaction), visualization with ggplot2.
+
+## Library loading
+This section initializes the environment with essential packages for microbiome analysis, data visualization, and statistical reporting.
 ```{r libraries, include = FALSE}
 library(tidyverse)
 library(phyloseq)
@@ -14,7 +18,7 @@ library(ggpubr)
 ```
 
 ## Load the data
-
+This section imports the raw feature tables, taxonomy, and metadata, specifically filtering for clinical samples with complete medication records.
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv('../../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
@@ -31,7 +35,7 @@ taxonomy = read.delim('../../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object
-
+This chunk integrates the separate counts, taxonomy, and metadata into a unified phyloseq object for standardized analysis.
 ```{r Create a Phyloseq object}
 taxonomy_formatted = taxonomy %>% 
   separate(col = Taxon,
@@ -49,7 +53,7 @@ ps = phyloseq(sample_data(parkinsons_metadata_filt_cat_entacapone_NA_removed),
 ```
 
 ## Alpha rarefaction curve
-
+This section normalizes sequencing effort across samples to ensure that richness comparisons are not skewed by library size differences.
 ```{r alpha_rarefaction}
 # Alpha rarefaction curve
 rarecurve(t(data.frame(ps@otu_table)),
@@ -63,6 +67,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 ```
 
 ## Alpha Diversity Analysis
+This section visualizes the Observed Features for antioxidant intake tertiles. Note: The script repeats this workflow—Data Extraction -> Releveling -> Plotting for antioxidant groups.
 
 ### Beta carotene
 

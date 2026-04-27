@@ -3,8 +3,12 @@ title: "Alpha Diversity Analysis Simpson Plots"
 author: Yanting Xiong
 output: html_document
 ---
-## Library loading
 
+## Introduction
+This R Markdown script generates Simpson Index alpha diversity plots to compare microbial evenness across varying dietary antioxidant intake levels in Parkinson’s Disease patients. It integrates data rarefaction, and custom visualization using ggplot2.
+
+## Library loading
+This section loads the tools required for microbiome data handling, statistical analysis, and advanced plot annotations.
 ```{r libraries, include = FALSE}
 library(tidyverse)
 library(phyloseq)
@@ -14,7 +18,7 @@ library(ggpubr)
 ```
 
 ## Load the data
-
+The purpose of this section is to import raw data and clean the metadata, specifically removing clinical samples missing drug record data.
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv('../../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
@@ -31,7 +35,7 @@ taxonomy = read.delim('../../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object
-
+This chunk merges the taxonomy, counts, and metadata into a unified object for standardized analysis.
 ```{r Create a Phyloseq object}
 taxonomy_formatted = taxonomy %>% 
   separate(col = Taxon,
@@ -49,7 +53,7 @@ ps = phyloseq(sample_data(parkinsons_metadata_filt_cat_entacapone_NA_removed),
 ```
 
 ## Alpha rarefaction curve
-
+This section normalizes sequencing depth across all samples to ensure diversity comparisons are statistically fair.
 ```{r alpha_rarefaction}
 # Alpha rarefaction curve
 rarecurve(t(data.frame(ps@otu_table)),
@@ -63,6 +67,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 ```
 
 ## Alpha Diversity Analysis
+This section specifically visualizes the Simpson Index for each antioxidant.Note: The script continues with the exact same workflow—Data Extraction -> Releveling -> Plotting for antioxidant intake groups.
 
 ### Beta carotene
 

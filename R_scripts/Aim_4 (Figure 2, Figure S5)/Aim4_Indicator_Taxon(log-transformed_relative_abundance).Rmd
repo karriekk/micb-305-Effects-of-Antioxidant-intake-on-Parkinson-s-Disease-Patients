@@ -9,15 +9,19 @@ date: "2026-03-20"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Load Library
+## Introduction
+This script investigates whether the relative abundance of the indicator genus Escherichia-Shigella (identified in previous aims) is a significant predictor of cognitive performance, measured by MoCA scores, in Parkinson’s Disease patients, while adjusting for clinical covariates like Age, Sex, and medication.
 
+## Load Library
+Initialize the environment with essential packages for microbiome data manipulation and tidy data processing.
 ```{r}
 library(tidyverse)
 library(phyloseq)
+library(ggplot2)
 ```
 
 # Load dataset
-
+Import raw feature tables, taxonomy assignments, and clinical metadata.
 ```{r Load datasets}
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
@@ -31,7 +35,7 @@ taxonomy = read.delim('../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 # Create a Phyloseq Object
-
+Consolidate counts, taxonomy, and metadata into a unified object to ensure sample-data alignment.
 ```{r phyloseq_object}
 # Counts
 counts_formatted = counts %>% as.matrix()
@@ -51,7 +55,8 @@ ps = phyloseq(sample_data(parkinsons_metadata_filt_cat),
 
 ```
 
-
+## Indicator Taxon Processing
+Isolate the target taxon, normalize its abundance, and apply a transformation to correct for skewness.
 ```{r Load the indicator taxa}
 # Extract the indicator taxa obtained from Aim 2 
 taxa_id <- c("4c8288bfbd76958c0c094d87b97650f8") # Corresponds to Escherichia-Shigella
@@ -63,6 +68,8 @@ ps_genus = tax_glom(ps, "Genus")
 ps_relab = transform_sample_counts(ps_genus, function(x) x / sum(x))
 
 # Extract the phyloseq otu_table
+# Transpose is applied to ensure samples are rows for easier 
+# data-frame extraction, as taxa_are_rows is TRUE by default in this object.
 otu = as.data.frame(otu_table(ps_relab))
 
 # Make samples = rows
@@ -92,6 +99,8 @@ relative_abundance_distribution
 # The lowest non-zero relative abundance is 0.0001518834
 
 # Log transform relative abundance
+# A Log10 transformation is used because raw microbial abundance 
+# is highly right-skewed. We add a pseudocount of half the minimum non-zero value
 sub$log_rel_abund = log10(sub$rel_abund + 0.0001518834/2)
 
 hist(sub$log_rel_abund,
@@ -101,6 +110,8 @@ hist(sub$log_rel_abund,
      ylab = "Frequency")
 ```
 
+## Metadata Integration
+Join the processed microbial abundance data with clinical records for statistical modeling.
 
 ```{r Add to Metadata}
 meta <- data.frame(sample_data(ps_relab))
@@ -111,7 +122,7 @@ meta2 <- merge(meta, sub, by = "SampleID")
 ```
 
 # Linear Regression Model
-
+Test the association between the indicator taxon and MoCA scores while controlling for confounders.
 ```{r Predict the MoCA based on the indicator taxa}
 
 model <- lm(moca_total ~ log_rel_abund + Age + Sex + entacapone, data = meta2)
@@ -125,9 +136,8 @@ summary(model)
 ```
 
 # Linear Regression Plot
-
+Generate a scatter plot with a linear regression line to visualize the relationship for the final manuscript.
 ```{r Generate Plot for Aim 4}
-library(ggplot2)
 
 linear_regression_plot = ggplot(meta2, aes(x = log_rel_abund, y = moca_total)) +
   geom_point(size = 3, alpha = 0.7) +
@@ -139,7 +149,7 @@ linear_regression_plot = ggplot(meta2, aes(x = log_rel_abund, y = moca_total)) +
 linear_regression_plot
 
 # Export the plot
-ggsave("../../Results/Figures/Aim_4/Indicator_taxon/Association Between Log-10 Transformed Relative Abundance of Escherichia-Shigella and MoCA Score in PD Patients.png", plot = linear_regression_plot, width = 10, height = 7, dpi = 300)
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Indicator_taxon/Association Between Log-10 Transformed Relative Abundance of Escherichia-Shigella and MoCA Score in PD Patients.png", plot = linear_regression_plot, width = 10, height = 7, dpi = 300)
 
 ```
 

@@ -3,8 +3,12 @@ title: "Alpha Diversity Analysis"
 author: Yanting Xiong
 output: html_document
 ---
-## Library loading
 
+## Introduction
+This R Markdown script performs an Alpha Diversity Analysis to evaluate the richness and evenness of the gut microbiome across various dietary antioxidant intake levels (Beta-carotene, Alpha-carotene, Vitamins A, C, and E) in a Parkinson’s Disease cohort. It includes data rarefaction, visualization of four key metrics (Observed, Shannon, Chao1, and Simpson), and statistical testing using linear regression models to account for clinical confounders.
+
+## Library loading
+This section loads the necessary packages for microbiome data structure, visualization, and tidy statistical modeling.
 ```{r libraries, include = FALSE}
 library(tidyverse)
 library(phyloseq)
@@ -14,7 +18,7 @@ library(broom)
 ```
 
 ## Load the data
-
+This section imports the raw data and performs essential cleaning on the metadata to handle missing values and clinical covariates.
 ```{r load_data}
 # Load in the filtered and wrangled Parkinson's metadata
 parkinsons_metadata_filt_cat = read.csv('../../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv', row.names = 1)
@@ -31,7 +35,7 @@ taxonomy = read.delim('../../../QIIME2_outputs/taxonomy.tsv', row.names = 1)
 ```
 
 ## Make a Phyloseq object
-
+This chunk formats and integrates the counts, taxonomy, and metadata into a single object for streamlined downstream analysis.
 ```{r Create a Phyloseq object}
 taxonomy_formatted = taxonomy %>% 
   separate(col = Taxon,
@@ -49,7 +53,7 @@ ps = phyloseq(sample_data(parkinsons_metadata_filt_cat_entacapone_NA_removed),
 ```
 
 ## Alpha rarefaction curve
-
+This section normalizes sequencing depth to ensure that diversity comparisons are not biased by uneven library sizes.
 ```{r alpha_rarefaction}
 # Alpha rarefaction curve
 rarecurve(t(data.frame(ps@otu_table)),
@@ -63,6 +67,7 @@ psrare = ps %>% rarefy_even_depth(sample.size = 6515, rngseed = 421)
 ```
 
 ## Alpha Diversity Analysis
+This section visualizes diversity metrics for antioxidant and runs linear regressions to test for significance while controlling for Age, Sex, and drug intake. Note: The script repeats this workflow for all dietary antioxidants. Each section maintains the same internal logic: Releveling -> Visualization -> Confounder-adjusted Statistics.
 
 ### Beta carotene
 

@@ -5,14 +5,17 @@ output: html_document
 date: "2026-03-05"
 ---
 
-## Library loading
+## Introduction
+This R Markdown script performs the initial metadata cleaning and cohort standardization for a Parkinson’s Disease study. Its primary goal is to isolate patients with complete dietary records and categorize them into Antioxidant Intake Tertiles (Low, Medium, High) using the Dietary Antioxidant Index (DAI) method to ensure statistically even groups for downstream microbiome analysis.
 
+## Library loading
+Initialize the analysis environment with essential data manipulation packages.
 ```{r libraries, include = FALSE}
 library(tidyverse)
 ```
 
 ## Load the dataset
-
+Import the raw clinical and dietary metadata from the project directory.
 ```{r load_data}
 parkinsons_metadata = read.delim('../../Datasets/Metadata/parkinsons_metadata.txt')
 ```

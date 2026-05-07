@@ -1,0 +1,137 @@
+---
+title: "pathway_testing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Load Library
+Initialize the environment with essential packages for microbiome data manipulation and tidy data processing.
+```{r}
+library(tidyverse)
+library(phyloseq)
+library(ggplot2)
+```
+
+# Load dataset
+Import raw feature tables, taxonomy assignments, and clinical metadata.
+```{r Load datasets}
+# Load clinical and DAI metadata
+metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
+metadata$SampleID = rownames(metadata)
+
+# Load the Master Maaslin2 results (must include p_adjust and manual log2fc)
+daa_results = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Vitamin_C/daa_master_results_with_L2FC.rds')
+
+# Dynamically extract pathway IDs that met our significance thresholds
+significant_df = daa_results %>%
+  filter(p_adjust < 0.05, abs(log2fc) >= 1)
+
+significant_pathways = significant_df$feature
+
+```
+2. Load and Process Functional Pathway Data
+Import raw pathway abundances, convert to relative abundance, subset for our significant pathways, and apply a log10 transformation.
+
+```{r}
+# Load raw pathway abundance table (rows = pathways, cols = samples)
+pathway_counts = read.delim('../../QIIME2_outputs/path_abun_unstrat.tsv', row.names = 1)
+
+# Convert to relative abundance (column-wise division by column sums)
+pathway_relab = sweep(pathway_counts, 2, colSums(pathway_counts), `/`)
+
+# Subset the table for ONLY our significant pathways and transpose so samples are rows
+sub_pathways = as.data.frame(t(pathway_relab[significant_pathways, , drop = FALSE]))
+
+# Calculate a dynamic pseudocount (half the minimum non-zero value across these specific pathways)
+min_nonzero = min(sub_pathways[sub_pathways > 0])
+
+# Apply Log10 transformation to all selected pathway columns simultaneously
+sub_log = sub_pathways %>%
+  mutate(across(everything(), ~ log10(.x + (min_nonzero / 2))))
+
+sub_log$SampleID = rownames(sub_log)
+
+```
+3. Metadata Integration
+Join the clinical metadata with the log-transformed pathway abundances
+```{r}
+# Merge by SampleID
+meta_merged = merge(metadata, sub_log, by = "SampleID")
+
+# Verify the merge
+head(meta_merged)
+```
+
+4. Principal Component Analysis (PCA)
+Collapse the multiple significant pathways into a single "Combined Metric" (PC1) to avoid multicollinearity in our linear model.
+
+```{r}
+# Isolate just the numeric pathway columns for the PCA matrix
+pathway_matrix = meta_merged %>% 
+  select(all_of(significant_pathways))
+
+# Run PCA - CRITICAL: scale. = TRUE ensures high-abundance pathways don't dominate the score
+pca_result = prcomp(pathway_matrix, center = TRUE, scale. = TRUE)
+
+# Calculate variance explained by PC1
+pca_summary = summary(pca_result)
+variance_explained_pc1 = pca_summary$importance[2, 1] * 100
+
+print(paste("PC1 explains", round(variance_explained_pc1, 2), "% of the variance among the selected pathways."))
+
+# Append the PC1 scores back to our metadata table for the linear model
+meta_merged$Combined_Pathway_PC1 = pca_result$x[, 1]
+```
+
+5. Check Pathway Loadings (Optional)
+Identify which specific pathways are driving the PC1 score.
+
+```{r}
+# Extract the rotation (loadings) matrix for PC1
+pc1_loadings = as.data.frame(pca_result$rotation[, 1, drop = FALSE])
+colnames(pc1_loadings) = c("Loading")
+pc1_loadings$Pathway = rownames(pc1_loadings)
+
+# Sort to see the strongest drivers
+pc1_loadings = pc1_loadings %>% arrange(desc(abs(Loading)))
+print("Top pathways driving the Combined Metric (PC1):")
+head(pc1_loadings)
+```
+6. Linear Regression Model
+Test the association between the combined pathway metric (PC1) and MoCA scores while controlling for confounders.
+
+```{r}
+# Predict MoCA based on PC1, adjusting for Age, Sex, and entacapone
+model = lm(moca_total ~ Combined_Pathway_PC1 + Age + Sex + entacapone, data = meta_merged)
+
+summary(model)
+```
+7. Visualization
+Generate a scatter plot with a linear regression line for the final manuscript.
+
+```{r}
+# Plot PC1 against MoCA Total
+pca_moca_plot = ggplot(meta_merged, aes(x = Combined_Pathway_PC1, y = moca_total)) +
+  geom_point(aes(color = Age), size = 3, alpha = 0.7) + 
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  scale_color_viridis_c(name = "Age") +
+  labs(x = paste0("Combined Pathway Score (PC1)\nExplains ", round(variance_explained_pc1, 1), "% of Variance"),
+       y = "MoCA Score",
+       title = "Association of Functional Microbiome Shift with MoCA") +
+  theme_classic(base_size = 16) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+pca_moca_plot
+
+# Export the plot
+
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/PCA_Combined_Pathway_vs_MoCA.png", 
+       plot = pca_moca_plot, width = 10, height = 7, dpi = 300)
+```
+
+
+```{r}
+
+```

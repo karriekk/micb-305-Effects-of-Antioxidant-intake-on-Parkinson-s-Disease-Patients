@@ -119,6 +119,18 @@ significant_pathways = daa_results_log2fc_filtered %>%
 
 # save
 saveRDS(significant_pathways,'VC_significant_pathways.rds')
+
+# STEP 7: Merge the manual L2FC values back into the Maaslin2 results
+# We use a left_join matching the Maaslin2 'feature' column to your 'pathway' column
+daa_master_results = daa_annotated_results_df %>% 
+  left_join(ratio %>% select(pathway, log2fc, `VC High`, `VC Low`), by = c("feature" = "pathway"))
+
+# Optional: You can pre-flag the significant ones so it's easy to filter later
+daa_master_results = daa_master_results %>%
+  mutate(is_significant = ifelse(p_adjust < 0.05 & abs(log2fc) >= 1, "Yes", "No"))
+
+# Save this comprehensive dataframe! 
+saveRDS(daa_master_results, 'daa_master_results_with_L2FC.rds')
 ```
 
 ## Visualizing Significant Pathways (Error Bar Plots)

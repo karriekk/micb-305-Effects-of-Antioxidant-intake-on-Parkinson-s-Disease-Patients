@@ -130,7 +130,7 @@ pca_moca_plot
 
 # Export the plot
 
-ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/PCA_Combined_Pathway_vs_MoCA.png", 
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/VC_PCA_Combined_Pathway_vs_MoCA.png", 
        plot = pca_moca_plot, width = 10, height = 7, dpi = 600)
 ```
 

@@ -21,6 +21,7 @@ library(phyloseq)
 library(ggplot2)
 library(vegan)
 ```
+
 ## Dataset Loading
 Import raw feature tables, taxonomy assignments, and clinical metadata.
 ```{r Load datasets}
@@ -47,7 +48,7 @@ Import raw pathway abundances, subset for our significant pathways
 metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata$SampleID = rownames(metadata)
 
-# Load Maaslin2 Master Results
+# Load Maaslin2 Master Results for Beta-carotene
 daa_results = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Beta-caro/daa_master_results_with_L2FC.rds')
 
 # Extract ONLY the significant pathway IDs
@@ -170,6 +171,6 @@ pcoa_moca_plot = ggplot(meta_merged, aes(x = PCoA_Axis1, y = moca_total)) +
 
 pcoa_moca_plot
 
-ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot, width = 10, height = 7, dpi = 300)
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/BC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot, width = 10, height = 7, dpi = 300)
 ```
 

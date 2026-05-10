@@ -27,7 +27,7 @@ Import raw feature tables, taxonomy assignments, and clinical metadata.
 metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
 metadata$SampleID = rownames(metadata)
 
-# Load the Master Maaslin2 results (must include p_adjust and manual log2fc)
+# Load the Master Maaslin2 results for vitamin C
 daa_results = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Vitamin_C/daa_master_results_with_L2FC.rds')
 
 # Dynamically extract pathway IDs that met our significance thresholds
@@ -172,6 +172,6 @@ pcoa_moca_plot = ggplot(meta_merged, aes(x = PCoA_Axis1, y = moca_total)) +
 
 pcoa_moca_plot
 
-ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot, width = 10, height = 7, dpi = 300)
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/VC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot, width = 10, height = 7, dpi = 300)
 ```
 

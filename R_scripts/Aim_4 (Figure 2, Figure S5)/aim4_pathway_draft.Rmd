@@ -59,7 +59,7 @@ sub_pathways = as.data.frame(t(pathway_relab[significant_pathways, , drop = FALS
 min_nonzero = min(sub_pathways[sub_pathways > 0]) 
 
 # Apply CLR transformation
-pathway_clr = compositions::clr(sub_pathways + min_nonzero) %>% as.data.frame()
+pathway_clr = compositions::clr(sub_pathways + min_nonzero/2) %>% as.data.frame()
 
 # Calculate Spearman coefficient
 spearman = pathway_clr %>% cor(method = "spearman") %>% 

@@ -77,6 +77,7 @@ cor_df = as.data.frame(as.table(cor_matrix)) %>%
 
 # Filter for highly correlated pathway pairs (rho > 0.9)
 redundant_pairs = cor_df %>% filter(rho > 0.9)
+# 118 pairs
 
 # To avoid manually grouping them, since we have a lot of pathways that are highly correlated, we used a for loop approach:
 # We will keep the pathway from each redundant pair that had the highest absolute Log2FC in Maaslin2.

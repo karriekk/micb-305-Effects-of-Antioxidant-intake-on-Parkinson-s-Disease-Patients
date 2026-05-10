@@ -1,0 +1,67 @@
+---
+title: "aim4_pathway_vitamin_C_draft"
+output: html_document
+date: "2026-05-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Load Library
+Initialize the environment with essential packages for microbiome data manipulation and tidy data processing.
+
+```{r}
+library(tidyverse)
+library(phyloseq)
+library(ggplot2)
+```
+
+## Dataset Loading
+Import raw feature tables, taxonomy assignments, and clinical metadata.
+
+```{r Load datasets}
+# Load clinical and DAI metadata
+metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv", row.names = 1)
+metadata$SampleID = rownames(metadata)
+
+# Load the Master Maaslin2 results (must include p_adjust and manual log2fc)
+daa_results = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Vitamin_C/daa_master_results_with_L2FC.rds')
+
+# Dynamically extract pathway IDs that met our significance thresholds
+significant_df = daa_results %>%
+  filter(p_adjust < 0.05, abs(log2fc) >= 1)
+
+significant_pathways = significant_df$feature
+
+```
+
+## Load and Process Functional Pathway Data
+Import raw pathway abundances, convert to relative abundance, subset for our significant pathways, and apply a log10 transformation.
+
+```{r}
+# Load raw pathway abundance table (rows = pathways, cols = samples)
+pathway_counts = read.delim('../../QIIME2_outputs/path_abun_unstrat.tsv', row.names = 1)
+
+# Convert pathway abundance to relative abundance to normalize the counts
+pathway_relab = sweep(
+  pathway_counts, 
+  2, 
+  colSums(pathway_counts),
+  `/`
+  )
+
+# Subset the table for only our significant pathways and transpose so samples are rows
+sub_pathways = as.data.frame(t(pathway_relab[significant_pathways, , drop = FALSE]))
+
+# Calculate a dynamic pseudocount (half the minimum non-zero value across these specific pathways)
+min_nonzero = min(sub_pathways[sub_pathways > 0]) 
+
+# Apply CLR transformation
+pathway_clr = compositions::clr(sub_pathways + min_nonzero) %>% as.data.frame()
+
+# Calculate Spearman coefficient
+spearman = pathway_clr %>% cor(method = "spearman") %>% as.data.frame()
+
+```

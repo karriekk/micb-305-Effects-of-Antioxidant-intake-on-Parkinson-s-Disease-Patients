@@ -118,18 +118,18 @@ euclidean_dist_VC = dist(sig_pathways_vitamin_C_filtered, method = "euclidean")
 # View(as.matrix(euclidean_dist_VC)) # Each pairwise comparison included
 
 # Run PCoA analysis
-pcoa = cmdscale(euclidean_dist_VC, k = 2, eig = TRUE)
+pcoa_VC = cmdscale(euclidean_dist_VC, k = 2, eig = TRUE)
 
 # Calculate variance explained by Axis 1
-variance_explained = pcoa$eig / sum(pcoa$eig) * 100
-variance_pc1 = variance_explained[1]
+variance_explained_VC = pcoa_VC$eig / sum(pcoa_VC$eig) * 100
+variance_pc1_VC = variance_explained_VC[1]
 
 # Extract Axis 1 (our new combined metric) and format for merging
-pcoa_df = data.frame(SampleID = rownames(pcoa$points),
-                     PCoA_Axis1 = pcoa$points[, 1])
+pcoa_df_VC = data.frame(SampleID = rownames(pcoa_VC$points),
+                        PCoA_Axis1_VC = pcoa_VC$points[, 1])
 
 # Merge with clinical metadata
-parkinsons_meta_merged = merge(parkinsons_metadata_entacapone_NA_removed, pcoa_df, by = "SampleID")
+parkinsons_meta_merged = merge(parkinsons_metadata_entacapone_NA_removed, pcoa_df_VC, by = "SampleID")
 
 ```
 
@@ -138,7 +138,7 @@ Test the association between the combined pathway metric (PC1) and MoCA scores w
 
 ```{r}
 # Predict MoCA based on PCoA_Axis1, adjusting for Age, Sex, and entacapone
-model = lm(moca_total ~ PCoA_Axis1 + Age + Sex + entacapone, data = parkinsons_meta_merged)
+model = lm(moca_total ~ PCoA_Axis1_VC + Age + Sex + entacapone, data = parkinsons_meta_merged)
 
 summary(model)
 ```

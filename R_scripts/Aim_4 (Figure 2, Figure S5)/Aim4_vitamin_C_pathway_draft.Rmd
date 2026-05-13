@@ -1,5 +1,5 @@
 ---
-title: "Aim4_VC_pathway_draft"
+title: "Aim4_vitamin_C_pathway_draft"
 authors: Cynthia Lin, Yanting Xiong
 output: html_document
 date: "2026-05-09"
@@ -106,15 +106,15 @@ sig_pathways_vitamin_C_filtered = sig_pathways_vitamin_C %>% select(all_of(final
 ```
 
 ## PCoA analysis
-Use Bray-Curtis to run PCoA analysis.
+Use Euclidean distance to run PCoA analysis.
 
 ```{r}
 # Euclidean distance on CLR data
-euclidean_dist = dist(sig_pathways_vitamin_C_filtered, method = "euclidean")
-# View(as.matrix(euclidean_dist)) # Each pairwise comparison included
+euclidean_dist_VC = dist(sig_pathways_vitamin_C_filtered, method = "euclidean")
+# View(as.matrix(euclidean_dist_VC)) # Each pairwise comparison included
 
 # Run PCoA analysis
-pcoa = cmdscale(euclidean_dist, k = 2, eig = TRUE)
+pcoa = cmdscale(euclidean_dist_VC, k = 2, eig = TRUE)
 
 # Calculate variance explained by Axis 1
 variance_explained = pcoa$eig / sum(pcoa$eig) * 100

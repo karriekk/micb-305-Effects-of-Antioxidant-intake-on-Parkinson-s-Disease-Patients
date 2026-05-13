@@ -1,5 +1,6 @@
 ---
 title: "Aim4_beta-carotene_pathway_draft"
+authors: Cynthia Lin, Yanting Xiong
 output: html_document
 date: "2026-05-13"
 ---
@@ -8,22 +9,147 @@ date: "2026-05-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Load Library
+Initialize the environment with essential packages for microbiome data manipulation and tidy data processing.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+library(tidyverse)
+library(phyloseq)
+library(ggplot2)
+library(compositions)
 ```
 
-## Including Plots
+## Dataset Loading
+Import raw feature tables, taxonomy assignments, and clinical metadata.
 
-You can also embed plots, for example:
+```{r Load datasets}
+# Load clinical and DAI metadata
+parkinsons_metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv") %>% rename(SampleID = `X.SampleID`)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Load the Master Maaslin2 results for vitamin C
+daa_results_BC = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Beta-caro/daa_master_results_with_L2FC.rds')
+
+# Extract pathways that meet our significance thresholds (p-adjust < 0.05 & abs(log2fc) >= 1)
+significant_df_BC = daa_results_BC %>%
+  filter(p_adjust < 0.05, abs(log2fc) >= 1)
+
+significant_pathways_BC = significant_df_BC$feature
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Load and Process Functional Pathway Data
+Import raw pathway abundances, apply a CLR transformation, and subset for the significantly differentially abundant pathways identified in aim 3 for beta-carotene.
+
+```{r}
+# Load raw pathway abundance table (rows = pathways, cols = samples)
+pathway_counts = read.delim('../../QIIME2_outputs/path_abun_unstrat.tsv', row.names = 1)
+
+# Calculate a pseudocount (half the minimum non-zero value across all the pathways)
+min_nonzero = min(pathway_counts[pathway_counts > 0]) # 0.331428571428571
+
+# Apply CLR transformation and transform the results into a data frame 
+pathway_clr = clr(pathway_counts + min_nonzero/2) %>% as.data.frame()
+
+# Subset the table for only significantly differentially abundant pathways identified in aim 3 and transpose so samples are rows
+sig_pathways_beta_carotene = as.data.frame(t(pathway_clr[significant_pathways_BC, , drop = FALSE]))
+
+# Calculate Spearman coefficient
+spearman_BC = sig_pathways_beta_carotene %>% cor(method = "spearman") %>% 
+  as.data.frame() %>% 
+  rownames_to_column("PWY1") %>% 
+  pivot_longer(cols = -PWY1, names_to = "PWY2", values_to = "cor") %>% 
+  arrange(-cor)
+
+# Select only those that are strongly correlated with a rho threshold of greater than 0.9
+verycor_BC = spearman_BC %>% filter(cor > 0.9) %>% 
+  filter(PWY1 != PWY2) # Remove self-correlations
+
+# To avoid manually grouping them, since we have a lot of pathways that are highly correlated, we used a for loop approach:
+# We will keep the pathway from each redundant pair that has the lowest p-value in Maaslin2.
+
+# Create a lookup table for effect sizes from our Maaslin2 results
+p_values_BC = significant_df_BC %>% select(feature, p_adjust) 
+
+# Identify which pathways to drop
+pathways_to_drop_BC = c()
+
+for(i in 1:nrow(verycor_BC)) {
+  p1 = verycor_BC$PWY1[i]
+  p2 = verycor_BC$PWY2[i]
+  
+  # Only process if we haven't already dropped one of them in a previous loop
+  if(!(p1 %in% pathways_to_drop_BC) && !(p2 %in% pathways_to_drop_BC)){
+    
+    # Compare their p-values
+    p_value_p1 = p_values_BC$p_adjust[p_values_BC$feature == p1]
+    p_value_p2 = p_values_BC$p_adjust[p_values_BC$feature == p2]
+    
+    # Drop the one with the higher p-value
+    if(p_value_p1 > p_value_p2) {
+      pathways_to_drop_BC = c(pathways_to_drop_BC, as.character(p1))
+    } else {
+      pathways_to_drop_BC = c(pathways_to_drop_BC, as.character(p2))
+    }
+  }
+}
+
+pathways_to_drop_BC = unique(pathways_to_drop_BC)
+
+# Create our final, non-redundant list
+final_pathways_BC = setdiff(significant_pathways_BC, pathways_to_drop_BC) 
+# Started with 21 pathways, kept 10 non-redundant pathways.
+
+# Update our working matrix to only include the non-redundant pathways
+sig_pathways_beta_carotene_filtered = sig_pathways_beta_carotene %>% select(all_of(final_pathways_BC))
+
+```
+
+## PCoA analysis
+Use Euclidean distance to run PCoA analysis.
+
+```{r}
+# Euclidean distance on CLR data
+euclidean_dist_BC = dist(sig_pathways_beta_carotene_filtered, method = "euclidean")
+# View(as.matrix(euclidean_dist_BC)) # Each pairwise comparison included
+
+# Run PCoA analysis
+pcoa = cmdscale(euclidean_dist_BC, k = 2, eig = TRUE)
+
+# Calculate variance explained by Axis 1
+variance_explained = pcoa$eig / sum(pcoa$eig) * 100
+variance_pc1 = variance_explained[1]
+
+# Extract Axis 1 (our new combined metric) and format for merging
+pcoa_df = data.frame(SampleID = rownames(pcoa$points),
+                     PCoA_Axis1 = pcoa$points[, 1])
+
+# Merge with clinical metadata
+parkinsons_meta_merged = merge(parkinsons_metadata, pcoa_df, by = "SampleID")
+
+```
+
+## Linear Regression Model
+Test the association between the combined pathway metric (PC1) and MoCA scores while controlling for confounders.
+
+```{r}
+# Predict MoCA based on PCoA_Axis1, adjusting for Age, Sex, and entacapone
+model = lm(moca_total ~ PCoA_Axis1 + Age + Sex + entacapone, data = parkinsons_meta_merged)
+
+summary(model)
+```
+
+## Visualization of Linear Regression Model
+Generate a scatter plot with a linear regression line for the final manuscript.
+
+```{r}
+pcoa_moca_plot = ggplot(parkinsons_meta_merged, aes(x = PCoA_Axis1, y = moca_total)) +
+  geom_point(size = 3, alpha = 0.7) + 
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(x = paste0("Combined Pathway Score (PCoA Axis 1)\nExplains ", round(variance_pc1, 1), "% of Variance"),
+       y = "MoCA Score") +
+  theme_classic(base_size = 16) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+pcoa_moca_plot
+
+```

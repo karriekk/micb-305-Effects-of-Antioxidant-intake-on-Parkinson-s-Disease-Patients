@@ -1,5 +1,6 @@
 ---
-title: "aim4_pathway_vitamin_C_draft"
+title: "Aim4_VC_pathway_draft"
+authors: Cynthia Lin, Yanting Xiong
 output: html_document
 date: "2026-05-09"
 ---

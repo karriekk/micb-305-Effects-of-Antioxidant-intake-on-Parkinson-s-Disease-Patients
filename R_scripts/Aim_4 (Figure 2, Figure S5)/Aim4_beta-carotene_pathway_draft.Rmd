@@ -148,12 +148,14 @@ Generate a scatter plot with a linear regression line for the final manuscript.
 ```{r}
 pcoa_moca_plot = ggplot(parkinsons_meta_merged, aes(x = PCoA_Axis1_BC, y = moca_total)) +
   geom_point(size = 3, alpha = 0.7) + 
-  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  geom_smooth(method = "lm", se = TRUE) +
   labs(x = paste0("Combined Pathway Score (PCoA Axis 1)\nExplains ", round(variance_pc1_BC, 1), "% of Variance"),
        y = "MoCA Score") +
   theme_classic(base_size = 16) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5))
 
 pcoa_moca_plot
+
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/BC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot, width = 10, height = 7, dpi = 300)
 
 ```

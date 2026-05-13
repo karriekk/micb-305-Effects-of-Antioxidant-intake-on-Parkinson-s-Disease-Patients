@@ -26,6 +26,10 @@ Import raw feature tables, taxonomy assignments, and clinical metadata.
 # Load clinical and DAI metadata
 parkinsons_metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv") %>% rename(SampleID = `X.SampleID`)
 
+# Because we will be controlling for entacapone in downstream analyses and it contains NA values, they need to be removed from the filtered metadata
+parkinsons_metadata_entacapone_NA_removed = parkinsons_metadata %>% filter(!is.na(entacapone))
+# 10 PD individuals are removed after this filtering step because they do not have entacapone intakes recorded
+
 # Load the Master Maaslin2 results for vitamin C
 daa_results_BC = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Beta-caro/daa_master_results_with_L2FC.rds')
 
@@ -113,10 +117,10 @@ euclidean_dist_BC = dist(sig_pathways_beta_carotene_filtered, method = "euclidea
 # View(as.matrix(euclidean_dist_BC)) # Each pairwise comparison included
 
 # Run PCoA analysis
-pcoa = cmdscale(euclidean_dist_BC, k = 2, eig = TRUE)
+pcoa_BC = cmdscale(euclidean_dist_BC, k = 2, eig = TRUE)
 
 # Calculate variance explained by Axis 1
-variance_explained = pcoa$eig / sum(pcoa$eig) * 100
+variance_explained_BC = pcoa_BC$eig / sum(pcoa_BC$eig) * 100
 variance_pc1 = variance_explained[1]
 
 # Extract Axis 1 (our new combined metric) and format for merging
@@ -124,7 +128,7 @@ pcoa_df = data.frame(SampleID = rownames(pcoa$points),
                      PCoA_Axis1 = pcoa$points[, 1])
 
 # Merge with clinical metadata
-parkinsons_meta_merged = merge(parkinsons_metadata, pcoa_df, by = "SampleID")
+parkinsons_meta_merged = merge(parkinsons_metadata_entacapone_NA_removed, pcoa_df, by = "SampleID")
 
 ```
 

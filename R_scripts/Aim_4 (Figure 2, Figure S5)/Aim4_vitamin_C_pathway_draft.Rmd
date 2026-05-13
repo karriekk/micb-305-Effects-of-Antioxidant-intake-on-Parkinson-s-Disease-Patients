@@ -27,6 +27,10 @@ Import raw feature tables, taxonomy assignments, and clinical metadata.
 # Load clinical and DAI metadata
 parkinsons_metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv") %>% rename(SampleID = `X.SampleID`)
 
+# Because we will be controlling for entacapone in downstream analyses and it contains NA values, they need to be removed from the filtered metadata
+parkinsons_metadata_entacapone_NA_removed = parkinsons_metadata %>% filter(!is.na(entacapone))
+# 10 PD individuals are removed after this filtering step because they do not have entacapone intakes recorded
+
 # Load the Master Maaslin2 results for vitamin C
 daa_results_VC = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Vitamin_C/daa_master_results_with_L2FC.rds')
 
@@ -125,7 +129,7 @@ pcoa_df = data.frame(SampleID = rownames(pcoa$points),
                      PCoA_Axis1 = pcoa$points[, 1])
 
 # Merge with clinical metadata
-parkinsons_meta_merged = merge(parkinsons_metadata, pcoa_df, by = "SampleID")
+parkinsons_meta_merged = merge(parkinsons_metadata_entacapone_NA_removed, pcoa_df, by = "SampleID")
 
 ```
 

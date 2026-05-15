@@ -111,7 +111,7 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
 #### Aim 4: Link Everything to Cognitive Performance (MoCA) (Figure 2)
 - Indicator Taxon - Escherichia-Shigella
 
-  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%20S5)/Aim4_Indicator_Taxon(log-transformed_relative_abundance).Rmd)
+  - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%204%2C%20Figure%20S5)/Aim4_Indicator_Taxon(log-transformed_relative_abundance).Rmd)
  
   - [Figure](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Figures/Aim_4%20(Figure_2%2C%20Figure_S5)/Indicator_taxon/Association%20Between%20Log-10%20Transformed%20Relative%20Abundance%20of%20Escherichia-Shigella%20and%20MoCA%20Score%20in%20PD%20Patients.png)
  
@@ -119,13 +119,13 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
 
   - Vitamin C
  
-    - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%20S5)/Aim4_vitamin_C_pathway.Rmd)
+    - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%204%2C%20Figure%20S5)/Aim4_vitamin_C_pathway.Rmd)
    
     - [Figure]
    
   - Beta-carotene
  
-    - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%20S5)/Aim4_beta-carotene_pathway.Rmd)
+    - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%204%2C%20Figure%20S5)/Aim4_beta-carotene_pathway.Rmd)
    
     - [Figure]
 

@@ -1,0 +1,202 @@
+---
+title: "Aim4 Vitamin C Pathways and MoCA Scores"
+authors: Cynthia Lin, Yanting Xiong
+output: html_document
+date: "2026-05-09"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Load Library
+
+Initialize the environment with essential packages for microbiome data manipulation and tidy data processing.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(compositions)
+library(vegan)
+```
+
+## Dataset Loading
+
+Import Parkinson's metadata and MaAsLin2 results for vitamin C.
+
+```{r Load datasets}
+# Load Parkinson's metadata
+parkinsons_metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt_cat.csv") %>% rename(SampleID = `X.SampleID`)
+
+# Remove one PD patient with missing MoCA score
+parkinsons_metadata_MoCA_NA_removed = parkinsons_metadata[parkinsons_metadata$SampleID != "F2501", ] 
+
+# Categorize PD patients based on their MoCA scores
+parkinsons_metadata_MoCA_NA_removed = mutate(parkinsons_metadata_MoCA_NA_removed, 
+                                             "MoCA_score_categorization" = ifelse(moca_total < 26, "Abnormal", "Normal"))
+
+# Load the Master Maaslin2 results for vitamin C
+daa_results_VC = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Vitamin_C/daa_master_results_with_L2FC.rds')
+
+# Extract pathways that meet our significance thresholds (p-adjust < 0.05 & abs(log2fc) >= 1)
+significant_df_VC = daa_results_VC %>%
+  filter(p_adjust < 0.05, abs(log2fc) >= 1)
+
+significant_pathways_VC = significant_df_VC$feature
+
+```
+
+## Load and Process Functional Pathway Data
+
+Import raw pathway abundances, apply a CLR transformation, and subset for the significantly differentially abundant pathways identified in aim 3 for vitamin C.
+
+```{r}
+# Load raw pathway abundance table (rows = pathways, cols = samples)
+pathway_counts = read.delim('../../QIIME2_outputs/path_abun_unstrat.tsv', row.names = 1)
+
+# Manually remove PD patients with missing dietary antioxidant intake values and MoCA scores from the pathway abundance table
+# The PD patient IDs are: F1452, F3436, F4446, F4484, F4660, F5362, F6222, F6413, F8334, F8922, F9523, F9556, F9856, F2501
+pathway_counts[c("F1452", "F3436", "F4446", "F4484", "F4660", "F5362", "F6222", "F6413", "F8334", "F8922", "F9523", "F9556", "F9856", "F2501")] = NULL
+
+# Calculate a pseudocount (half the minimum non-zero value across all the pathways)
+min_nonzero = min(pathway_counts[pathway_counts > 0]) # 0.331428571428571
+
+# Apply CLR transformation and transform the results into a data frame 
+pathway_clr = clr(pathway_counts + min_nonzero/2) %>% as.data.frame()
+
+# Subset the table for only significantly differentially abundant pathways identified in aim 3 and transpose so samples are rows
+sig_pathways_vitamin_C = as.data.frame(t(pathway_clr[significant_pathways_VC, , drop = FALSE]))
+
+# Calculate Spearman coefficient
+spearman_VC = sig_pathways_vitamin_C %>% cor(method = "spearman") %>% 
+  as.data.frame() %>% 
+  rownames_to_column("PWY1") %>% 
+  pivot_longer(cols = -PWY1, names_to = "PWY2", values_to = "cor") %>% 
+  arrange(-cor)
+
+# Select only those that are strongly correlated with a rho threshold of greater than 0.9
+verycor_VC = spearman_VC %>% filter(cor > 0.9) %>% 
+  filter(PWY1 != PWY2) # Remove self-correlations
+
+# To avoid manually grouping them, since we have a lot of pathways that are highly correlated, we used a for loop approach:
+# We will keep the pathway from each redundant pair that has the lowest p-value in Maaslin2.
+
+# Create a lookup table for effect sizes from our Maaslin2 results
+p_values_VC = significant_df_VC %>% select(feature, p_adjust) 
+
+# Identify which pathways to drop
+pathways_to_drop_VC = c()
+
+for(i in 1:nrow(verycor_VC)) {
+  p1 = verycor_VC$PWY1[i]
+  p2 = verycor_VC$PWY2[i]
+  
+  # Only process if we haven't already dropped one of them in a previous loop
+  if(!(p1 %in% pathways_to_drop_VC) && !(p2 %in% pathways_to_drop_VC)){
+    
+    # Compare their p-values
+    p_value_p1 = p_values_VC$p_adjust[p_values_VC$feature == p1]
+    p_value_p2 = p_values_VC$p_adjust[p_values_VC$feature == p2]
+    
+    # Drop the one with the higher p-value
+    if(p_value_p1 > p_value_p2) {
+      pathways_to_drop_VC = c(pathways_to_drop_VC, as.character(p1))
+    } else {
+      pathways_to_drop_VC = c(pathways_to_drop_VC, as.character(p2))
+    }
+  }
+}
+
+pathways_to_drop_VC = unique(pathways_to_drop_VC)
+
+# Create our final, non-redundant list
+final_pathways_VC = setdiff(significant_pathways_VC, pathways_to_drop_VC)
+# Started with 37 pathways, kept 17 non-redundant pathways.
+
+# Update our working matrix to only include the non-redundant pathways
+sig_pathways_vitamin_C_filtered = sig_pathways_vitamin_C %>% select(all_of(final_pathways_VC))
+
+```
+
+## PCoA analysis
+
+Use Aitchison distance to run PCoA analysis and visualize using ggplot2.
+
+```{r}
+# Compute dissimilarity matrix - Aitchison distance on CLR data
+aitchison_dist_VC = dist(sig_pathways_vitamin_C_filtered, method = "euclidean")
+# View(as.matrix(euclidean_dist_VC)) # Each pairwise comparison included
+
+# Run PCoA analysis
+pcoa_VC = cmdscale(aitchison_dist_VC, k = 2, eig = TRUE)
+
+# Extract coordinates and variance explained
+points_VC = as.data.frame(pcoa_VC$points)
+
+colnames(points_VC) = c("PCoA1", "PCoA2")
+
+points_VC$SampleID = rownames(points_VC)
+
+points_VC = merge(
+  points_VC,
+  parkinsons_metadata_MoCA_NA_removed[, c("SampleID", "moca_total", "Sex", "Age", "entacapone", "MoCA_score_categorization")],
+  by = "SampleID"
+)
+
+variance_explained_VC = round(100 * pcoa_VC$eig / sum(pcoa_VC$eig), 2)
+
+# Visualization with ggplot2
+pcoa_moca_plot_VC = ggplot(points_VC, aes(x = PCoA1, y = PCoA2, color = MoCA_score_categorization)) +
+  geom_point(size = 3) +
+  stat_ellipse(level = 0.95, linetype = 2, alpha = 0.3) +
+  labs(
+    x = paste0("PCoA1 (", variance_explained_VC[1], "%)"),
+    y = paste0("PCoA2 (", variance_explained_VC[2], "%)"),
+    color = "MoCA Score"
+ ) +
+  theme_minimal() +
+  theme_classic(base_size = 14) +
+  theme(axis.title = element_text(face = "bold")) +
+  scale_color_manual(values = c("Normal" = "#1F77B4",
+                                "Abnormal" = "#D62728"))
+pcoa_moca_plot_VC
+  
+# Export the ordination plot
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/VC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot_VC, width = 10, height = 7, dpi = 600)
+
+```
+
+## PERMANOVA test
+
+PERMANOVA test is performed to determine the statistical significance of the correlation.
+
+```{r}
+# Match the Parkinson's metadata to the distance matrix sample order --> reorders metadata so rows match the distance matrix order exactly
+parkinsons_metadata_match_VC = parkinsons_metadata_MoCA_NA_removed[match(labels(aitchison_dist_VC), # Gets the sample names from the distance matrix
+                                                                         parkinsons_metadata_MoCA_NA_removed$SampleID), ]
+
+# Remove rows with missing values (10 PD patients with missing entacapone intake information are removed)
+parkinsons_metadata_match_VC = parkinsons_metadata_match_VC[complete.cases(parkinsons_metadata_match_VC[, c("moca_total", "Age", "Sex", "entacapone", "MoCA_score_categorization")]), ]
+
+# Save sample IDs of kept samples
+keep_VC = parkinsons_metadata_match_VC$SampleID
+
+# Subset the distance matrix
+dist_mat_VC = as.dist(as.matrix(aitchison_dist_VC)[ # Converts distance object into a full square matrix
+  match(keep_VC, labels(aitchison_dist_VC)), 
+  match(keep_VC, labels(aitchison_dist_VC)) 
+])
+
+# Run PERMANOVA test to assess whether variation in the pathway distance matrix is associated with MoCA score after accounting for age, sex, and entacapone use
+set.seed(421)
+
+permanova_test = adonis2(
+  dist_mat_VC ~ MoCA_score_categorization + Age + Sex + entacapone,
+  data = parkinsons_metadata_match_VC,
+  by = "margin",
+  permutations = 999
+)
+permanova_test # p-value of moca_total is 0.393
+
+```

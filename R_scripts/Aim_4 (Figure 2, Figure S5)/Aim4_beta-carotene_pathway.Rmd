@@ -30,10 +30,6 @@ parkinsons_metadata = read.csv("../../Datasets/Metadata/parkinsons_metadata_filt
 # Remove one PD patient with missing MoCA score
 parkinsons_metadata_MoCA_NA_removed = parkinsons_metadata[parkinsons_metadata$SampleID != "F2501", ] 
 
-# Categorize PD patients based on their MoCA scores
-parkinsons_metadata_MoCA_NA_removed = mutate(parkinsons_metadata_MoCA_NA_removed, 
-                                             "MoCA_score_categorization" = ifelse(moca_total < 26, "Abnormal", "Normal"))
-
 # Load the Master Maaslin2 results for beta-carotene
 daa_results_BC = readRDS('../Aim_3 (Figure 3, Figure S3, Figure S4)/Beta-caro/daa_master_results_with_L2FC.rds')
 
@@ -136,14 +132,14 @@ points_BC$SampleID = rownames(points_BC)
 
 points_BC = merge(
   points_BC,
-  parkinsons_metadata_MoCA_NA_removed[, c("SampleID", "moca_total", "Sex", "Age", "entacapone", "MoCA_score_categorization")],
+  parkinsons_metadata_MoCA_NA_removed[, c("SampleID", "moca_total", "Sex", "Age", "entacapone")],
   by = "SampleID"
 )
 
 variance_explained_BC = round(100 * pcoa_BC$eig / sum(pcoa_BC$eig), 2)
 
 # Visualization with ggplot2
-pcoa_moca_plot_BC = ggplot(points_BC, aes(x = PCoA1, y = PCoA2, color = MoCA_score_categorization)) +
+pcoa_moca_plot_BC = ggplot(points_BC, aes(x = PCoA1, y = PCoA2, color = moca_total)) +
   geom_point(size = 3) +
   stat_ellipse(level = 0.95, linetype = 2, alpha = 0.3) +
   labs(
@@ -153,13 +149,11 @@ pcoa_moca_plot_BC = ggplot(points_BC, aes(x = PCoA1, y = PCoA2, color = MoCA_sco
  ) +
   theme_minimal() +
   theme_classic(base_size = 14) +
-  theme(axis.title = element_text(face = "bold")) +
-  scale_color_manual(values = c("Normal" = "#1F77B4",
-                                "Abnormal" = "#D62728"))
+  theme(axis.title = element_text(face = "bold"))
 pcoa_moca_plot_BC
 
 # Export the ordination plot
-ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/BC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot_BC, width = 10, height = 7, dpi = 600)
+ggsave("../../Results/Figures/Aim_4 (Figure_2, Figure_S5)/Pathways/BC_PCoA_NonRedundant_Pathway_vs_MoCA.png", plot = pcoa_moca_plot_BC, width = 10, height = 7, dpi = 800)
 
 ```
 
@@ -172,7 +166,7 @@ parkinsons_metadata_match_BC = parkinsons_metadata_MoCA_NA_removed[match(labels(
                                                                          parkinsons_metadata_MoCA_NA_removed$SampleID), ]
 
 # Remove rows with missing values (10 PD patients with missing entacapone intake information are removed)
-parkinsons_metadata_match_BC = parkinsons_metadata_match_BC[complete.cases(parkinsons_metadata_match_BC[, c("moca_total", "MoCA_score_categorization", "Age", "Sex", "entacapone")]), ]
+parkinsons_metadata_match_BC = parkinsons_metadata_match_BC[complete.cases(parkinsons_metadata_match_BC[, c("moca_total", "Age", "Sex", "entacapone")]), ]
 
 # Save sample IDs of kept samples
 keep_BC = parkinsons_metadata_match_BC$SampleID
@@ -187,11 +181,11 @@ dist_mat_BC = as.dist(as.matrix(aitchison_dist_BC)[ # Converts distance object i
 set.seed(421)
 
 permanova_test = adonis2(
-  dist_mat_BC ~ MoCA_score_categorization + Age + Sex + entacapone,
+  dist_mat_BC ~ moca_total + Age + Sex + entacapone,
   data = parkinsons_metadata_match_BC,
   by = "margin",
   permutations = 999
 )
-permanova_test # p-value for moca_total is 0.247
+permanova_test # p-value for moca_total is 0.379
 
 ```

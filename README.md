@@ -121,13 +121,13 @@ How is gut microbiota taxonomic and functional composition in Parkinson’s Dise
  
     - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%204%2C%20Figure%20S5)/Aim4_vitamin_C_pathway.Rmd)
    
-    - [Figure]
+    - [Figure](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Figures/Aim_4%20(Figure_2%2C%20Figure_S5)/Pathways/VC_PCoA_NonRedundant_Pathway_vs_MoCA.png)
    
   - Beta-carotene
  
     - [R script](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/R_scripts/Aim_4%20(Figure%202%2C%20Figure%204%2C%20Figure%20S5)/Aim4_beta-carotene_pathway.Rmd)
    
-    - [Figure]
+    - [Figure](https://github.com/karriekk/micb-305-Effects-of-Antioxidant-intake-on-Parkinson-s-Disease-Patients/blob/main/Results/Figures/Aim_4%20(Figure_2%2C%20Figure_S5)/Pathways/BC_PCoA_NonRedundant_Pathway_vs_MoCA.png)
 
 ## Weekly Meeting Agenda
 You can access all of our weekly meeting agendas [here](https://github.com/karriekk/micb-305-Team-5-/tree/main/meeting_agenda), or click the hyperlinks below to open a specific agenda.
